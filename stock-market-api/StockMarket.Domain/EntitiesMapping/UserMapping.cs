@@ -13,9 +13,16 @@ namespace StockMarket.Domain.EntitiesMapping
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
+            builder.HasIndex(i => i.Email)
+                .IsUnique();
+
             builder.Property(i => i.Name)
                 .HasMaxLength(200)
                 .IsRequired();
+
+            builder.Property(i => i.Email)
+               .HasMaxLength(200)
+               .IsRequired();
 
             builder.Property(i => i.Password)
                 .HasMaxLength(500)
