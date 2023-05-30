@@ -22,6 +22,8 @@ namespace StockMarket.Service.IoC
             IMapper mapper = mappingConfig.CreateMapper();
             services.AddSingleton(mapper);
 
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IEntrepriseService, EntrepriseService>();
             services.AddScoped<ITickerService, TickerService>();
         }

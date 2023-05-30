@@ -31,7 +31,7 @@ namespace StockMarket.Service.Concrete
         {
             if((await _entrepriseRepository.GetAll()).Any(i => i.Code == model.Code))
             {
-                return new ResultModel { ErrorMessages = "Entreprise Code already registred." };
+                return new ResultModel { Errors = "Entreprise Code already registred." };
             }
 
             var entity = _mapper.Map<Entreprise>(model);

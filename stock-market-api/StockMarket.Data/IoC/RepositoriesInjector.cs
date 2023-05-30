@@ -13,6 +13,8 @@ namespace StockMarket.Data.IoC
     {
         public static void RegisterRepositories(IServiceCollection services)
         {
+            services.AddScoped<IRequestLogRepository, RequestLogRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IEntrepriseRepository, EntrepriseRepository>();
             services.AddScoped<ITickerRepository, TickerRepository>();
         }

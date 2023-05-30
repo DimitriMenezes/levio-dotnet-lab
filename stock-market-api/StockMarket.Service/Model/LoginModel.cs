@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace StockMarket.Service.Model
 {
-    public class ResultModel
+    public class LoginModel
     {
-        public object Data { get; set; }
-        public object Errors { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
     }
 }

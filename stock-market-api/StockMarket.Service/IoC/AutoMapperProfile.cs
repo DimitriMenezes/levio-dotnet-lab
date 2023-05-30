@@ -13,6 +13,10 @@ namespace StockMarket.Service.IoC
     {
         public AutoMapperProfile()
         {
+            CreateMap<UserModel, User>()
+                .ReverseMap()
+                .ForMember(i => i.Password, j => j.Ignore());
+
             CreateMap<EntrepriseModel, Entreprise>()
                 .ReverseMap();
         }
