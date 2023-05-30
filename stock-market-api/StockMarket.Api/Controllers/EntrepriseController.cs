@@ -26,8 +26,10 @@ namespace StockMarket.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(EntrepriseModel model)
         {
-            await _entrepriseService.SaveEntreprise(model);
-            return Ok();
+            var result = await _entrepriseService.SaveEntreprise(model);
+            if (result.Errors != null)
+                return BadRequest(result.Errors);
+            return Ok(result.Data);
         }
     }
 }

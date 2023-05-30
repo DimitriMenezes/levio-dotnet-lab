@@ -10,6 +10,6 @@ namespace StockMarket.Service.Model.Filter
     {
         public string TickerCode { get; set; }
         public DateTime Start { get; set; }
-        public DateTime? End { get; set; }
+        public DateTime End { get; set; }
     }
 }

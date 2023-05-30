@@ -10,9 +10,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using StockMarket.Api.IoC;
 using StockMarket.Domain.Context;
+using StockMarket.Service.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace StockMarket.Api
@@ -32,6 +34,14 @@ namespace StockMarket.Api
             services.AddDbContext<StockMarketContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
                 .UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole())));
             services.AddScoped<DbContext, StockMarketContext>();
+
+            var stockDataApi = Configuration.GetSection("StockDataApi").Get<StockDataModel>();
+            services.AddHttpClient("StockData", c =>
+            {
+                c.BaseAddress = new Uri(stockDataApi.Url);
+                c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", stockDataApi.ApiKey);
+            });
+
             ApplicationInjector.RegisterServices(services);
             services.AddControllers();
             services.AddSwaggerGen(c =>

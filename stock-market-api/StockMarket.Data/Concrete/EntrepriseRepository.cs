@@ -14,5 +14,10 @@ namespace StockMarket.Data.Concrete
         public EntrepriseRepository(DbContext context) : base(context)
         {
         }
+
+        public async Task<Entreprise> GetByCode(string code)
+        {
+            return await _dbSet.FirstOrDefaultAsync(i => i.Code == code);
+        }
     }
 }
