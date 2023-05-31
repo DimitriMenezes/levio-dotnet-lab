@@ -15,6 +15,7 @@ namespace StockMarket.Domain.Context
         public DbSet<Entreprise> Entreprise { get; set; }
         public DbSet<Ticker> Ticker { get; set; }
         public DbSet<RequestLog> RequestLog { get; set; }
+        public DbSet<RequestLogTicker> RequestLogTicker { get; set; }
 
         public StockMarketContext()
         {
@@ -37,6 +38,7 @@ namespace StockMarket.Domain.Context
             modelBuilder.ApplyConfiguration(new HistoricalTickerMapping());
             modelBuilder.ApplyConfiguration(new RealTimeTickerMapping());
             modelBuilder.ApplyConfiguration(new RequestLogMapping());
+            modelBuilder.ApplyConfiguration(new RequestLogItemMapping());
         }
     }
 }

@@ -14,6 +14,6 @@ namespace StockMarket.Domain.Entities
         public decimal High { get; set; }
         public decimal Low { get; set; }        
         public Entreprise Entreprise { get; set; }
-        public List<RequestLog> RequestLogs { get; set; }
+        public List<RequestLogTicker> RequestLogTickers { get; set; }
     }
 }

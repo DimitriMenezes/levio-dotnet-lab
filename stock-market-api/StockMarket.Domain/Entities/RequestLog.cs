@@ -8,9 +8,11 @@ namespace StockMarket.Domain.Entities
 {
     public class RequestLog : BaseEntity
     {        
-        public int UserId { get; set; }
-        public int TickerId { get; set; }
-        public User User { get; set; }
-        public Ticker Ticker { get; set; }
+        public int UserId { get; set; }       
+        public string Status { get; set; }
+        public string RequestJson { get; set; }
+        public string ResponseJson { get; set; }
+        public User User { get; set; }      
+        public List<RequestLogTicker> RequestLogTickers { get; set; }
     }
 }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StockMarket.Domain.Context;
 
 namespace StockMarket.Domain.Migrations
 {
     [DbContext(typeof(StockMarketContext))]
-    partial class StockMarketContextModelSnapshot : ModelSnapshot
+    [Migration("20230531125626_AddJsonFieldsOnLog")]
+    partial class AddJsonFieldsOnLog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,29 +72,19 @@ namespace StockMarket.Domain.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int>("TickerId")
+                        .HasColumnType("int");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("TickerId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("RequestLog");
-                });
-
-            modelBuilder.Entity("StockMarket.Domain.Entities.RequestLogTicker", b =>
-                {
-                    b.Property<int>("RequestLogId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TickerId")
-                        .HasColumnType("int");
-
-                    b.HasKey("RequestLogId", "TickerId");
-
-                    b.HasIndex("TickerId");
-
-                    b.ToTable("RequestLogTicker");
                 });
 
             modelBuilder.Entity("StockMarket.Domain.Entities.Ticker", b =>
@@ -191,32 +183,21 @@ namespace StockMarket.Domain.Migrations
 
             modelBuilder.Entity("StockMarket.Domain.Entities.RequestLog", b =>
                 {
+                    b.HasOne("StockMarket.Domain.Entities.Ticker", "Ticker")
+                        .WithMany("RequestLogs")
+                        .HasForeignKey("TickerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("StockMarket.Domain.Entities.User", "User")
                         .WithMany("RequestLogs")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("StockMarket.Domain.Entities.RequestLogTicker", b =>
-                {
-                    b.HasOne("StockMarket.Domain.Entities.RequestLog", "RequestLog")
-                        .WithMany("RequestLogTickers")
-                        .HasForeignKey("RequestLogId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("StockMarket.Domain.Entities.Ticker", "Ticker")
-                        .WithMany("RequestLogTickers")
-                        .HasForeignKey("TickerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("RequestLog");
-
                     b.Navigation("Ticker");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("StockMarket.Domain.Entities.Ticker", b =>
@@ -235,14 +216,9 @@ namespace StockMarket.Domain.Migrations
                     b.Navigation("Tickers");
                 });
 
-            modelBuilder.Entity("StockMarket.Domain.Entities.RequestLog", b =>
-                {
-                    b.Navigation("RequestLogTickers");
-                });
-
             modelBuilder.Entity("StockMarket.Domain.Entities.Ticker", b =>
                 {
-                    b.Navigation("RequestLogTickers");
+                    b.Navigation("RequestLogs");
                 });
 
             modelBuilder.Entity("StockMarket.Domain.Entities.User", b =>

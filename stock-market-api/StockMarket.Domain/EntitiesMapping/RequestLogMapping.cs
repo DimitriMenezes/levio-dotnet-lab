@@ -17,9 +17,13 @@ namespace StockMarket.Domain.EntitiesMapping
                 .WithMany(i => i.RequestLogs)
                 .HasForeignKey(i => i.UserId);
 
-            builder.HasOne(i => i.Ticker)
-               .WithMany(i => i.RequestLogs)
-               .HasForeignKey(i => i.TickerId);
+            builder.Property(i => i.RequestJson)
+                .IsRequired();
+            builder.Property(i => i.ResponseJson)
+                .IsRequired();
+            builder.Property(i => i.Status)
+                .HasMaxLength(50)
+                .IsRequired();
         }
     }
 }
