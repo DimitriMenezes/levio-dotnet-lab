@@ -1,5 +1,4 @@
 ﻿using StockMarket.Service.Model;
-using StockMarket.Service.Model.Filter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace StockMarket.Service.Abstract
 {
-    public interface ITickerService
+    public interface IExternalStockMarketApiService
     {
-        Task<ResultModel> GetHistoricalData(TickerFilterModel model);
+        Task<ResultModel> GetHistoricalData(string code, DateTime start, DateTime end);
+        Task<ResultModel> GetRealTimeData();
     }
 }

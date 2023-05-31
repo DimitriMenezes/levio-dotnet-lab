@@ -13,6 +13,9 @@ namespace StockMarket.Domain.EntitiesMapping
     {
         public void Configure(EntityTypeBuilder<RequestLogTicker> builder)
         {
+            builder.Ignore(i => i.Id);
+            builder.Ignore(i => i.CreatedAt);
+
             builder.HasKey(i => new { i.RequestLogId, i.TickerId });
 
             builder.HasOne(i => i.Ticker)

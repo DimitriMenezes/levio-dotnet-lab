@@ -9,11 +9,10 @@ using System.Threading.Tasks;
 
 namespace StockMarket.Data.Concrete
 {
-    public class TickerRepository : BaseRepository<Ticker>, ITickerRepository
+    public class RequestLogTickerRepository : BaseRepository<RequestLogTicker>, IRequestLogTickerRepository
     {
-        public TickerRepository(DbContext context) : base(context)
+        public RequestLogTickerRepository(DbContext context) : base(context)
         {
-
         }
     }
 }

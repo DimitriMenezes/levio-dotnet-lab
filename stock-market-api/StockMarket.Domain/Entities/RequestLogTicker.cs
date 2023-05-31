@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StockMarket.Domain.Entities
 {
-    public class RequestLogTicker
+    public class RequestLogTicker : BaseEntity
     {
         public int RequestLogId { get; set; }
         public int TickerId { get; set; }   

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace StockMarket.Data.Abstract
 {
-    public interface ITickerRepository : IBaseRepository<Ticker>
+    public interface IRequestLogTickerRepository : IBaseRepository<RequestLogTicker>
     {
     }
 }

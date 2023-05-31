@@ -26,6 +26,7 @@ namespace StockMarket.Service.IoC
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IEntrepriseService, EntrepriseService>();
             services.AddScoped<ITickerService, TickerService>();
+            services.AddScoped<IExternalStockMarketApiService, ExternalStockMarketApiService>();
         }
     }
 }

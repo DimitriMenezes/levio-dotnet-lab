@@ -16,7 +16,9 @@ namespace StockMarket.Data.IoC
             services.AddScoped<IRequestLogRepository, RequestLogRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IEntrepriseRepository, EntrepriseRepository>();
-            services.AddScoped<ITickerRepository, TickerRepository>();
+            services.AddScoped<IHistoricalTickerRepository, HistoricalTickerRepository>();
+            services.AddScoped<IRealTimeTickerRepository, RealTimeTickerRepository>();
+            services.AddScoped<IRequestLogTickerRepository, RequestLogTickerRepository>();
         }
     }
 }
