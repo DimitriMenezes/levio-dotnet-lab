@@ -33,7 +33,7 @@ namespace StockMarket.Api.Controllers
         [HttpPost("RealTime")]
         public async Task<IActionResult> GetRealTimeData(TickerFilterModel model)
         {
-            var result = await _tickerService.GetHistoricalData(model);
+            var result = await _tickerService.GetRealTimeData(model);
             if (result.Errors != null)
                 return BadRequest(result.Errors);
             return Ok(result.Data);

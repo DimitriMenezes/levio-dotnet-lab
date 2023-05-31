@@ -14,7 +14,7 @@ namespace StockMarket.Service.Model
 
     public class MetaDataResultModel
     {
-        public string Tikcer { get; set; }
+        public string Ticker { get; set; }
         public string Name { get; set; }
         public int Found { get; set; }
         public int Returned { get; set; }     

@@ -36,9 +36,22 @@ namespace StockMarket.Service.Concrete
             return resultModel;
         }
 
-        public async Task<ResultModel> GetRealTimeData()
+        public async Task<ResultModel> GetRealTimeData(List<string> codes)
         {
-            throw new NotImplementedException();
+            var codeList = string.Join(",", codes);
+            var resultModel = new ResultModel { };
+            var httpClient = _httpClientFactory.CreateClient("StockData");          
+            var result = await httpClient.GetAsync($"quote?symbols={codeList}");
+            if (result.IsSuccessStatusCode)
+            {
+                var stringContent = await result.Content.ReadAsStringAsync();
+                var stockData = JsonConvert.DeserializeObject<RealTimeStockApiResultModel>(stringContent);
+                resultModel.Data = stockData;
+            }
+            else
+                resultModel.Errors = result.ReasonPhrase;
+
+            return resultModel;
         }
     }
 }

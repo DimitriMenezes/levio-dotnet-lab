@@ -11,5 +11,6 @@ namespace StockMarket.Service.Abstract
     public interface ITickerService
     {
         Task<ResultModel> GetHistoricalData(TickerFilterModel model);
+        Task<ResultModel> GetRealTimeData(TickerFilterModel model);
     }
 }

@@ -16,9 +16,10 @@ namespace StockMarket.Service.Concrete
 {
     public class TickerService : ITickerService
     {
-        private readonly IEntrepriseRepository _entrepriseRepository;        
+        private readonly IEntrepriseRepository _entrepriseRepository;
         private readonly IRequestLogRepository _requestLogRepository;
         private readonly IHistoricalTickerRepository _historicalTickerRepository;
+        private readonly IRealTimeTickerRepository _realTimeTickerRepository;
         private readonly IRequestLogTickerRepository _requestLogTickerRepository;
         private readonly IExternalStockMarketApiService _externalApiService;
         private readonly IMapper _mapper;
@@ -28,21 +29,84 @@ namespace StockMarket.Service.Concrete
             IRequestLogRepository requestLogRepository,
             IHistoricalTickerRepository historicalTickerRepository,
             IRequestLogTickerRepository requestLogTickerRepository,
+            IRealTimeTickerRepository realTimeTickerRepository,
             IExternalStockMarketApiService externalApiService,
             IMapper mapper)
         {
-            _entrepriseRepository = entrepriseRepository;            
+            _entrepriseRepository = entrepriseRepository;
             _requestLogRepository = requestLogRepository;
             _historicalTickerRepository = historicalTickerRepository;
+            _realTimeTickerRepository = realTimeTickerRepository;
             _requestLogTickerRepository = requestLogTickerRepository;
             _externalApiService = externalApiService;
             _mapper = mapper;
         }
 
 
-        public async Task GetRealTimeData(string code)
+        public async Task<ResultModel> GetRealTimeData(TickerFilterModel model)
         {
+            var entreprises = (await _entrepriseRepository.GetAll()).Where(i => model.EntrepriseId == i.Id);
+            var realTimeData = await _externalApiService.GetRealTimeData(entreprises.Select(i => i.Code).ToList());
+            if (realTimeData.Data != null)
+            {
+                var stockData = realTimeData.Data as RealTimeStockApiResultModel;
+                var newLog = new RequestLog
+                {
+                    RequestJson = JsonConvert.SerializeObject(model),
+                    ResponseJson = JsonConvert.SerializeObject(realTimeData.Data),
+                    Status = "Success",
+                    UserId = model.UserId
+                };
 
+                await _requestLogRepository.Insert(newLog);
+
+                foreach (var data in stockData.Data)
+                {
+                    int currentTickerId = 0;
+                    //var existingTicker = await _historicalTickerRepository.GetExistingTicker(model.EntrepriseId, data.Date);
+                    //if (existingTicker != null)
+                    //{
+                    //    currentTickerId = existingTicker.Id;
+                    //}
+                    //else
+                    //{
+                    var newTicker = new RealTimeTicker
+                    {
+                        EntrepriseId = model.EntrepriseId,
+                        High = data.High,                            
+                        Low = data.Low,
+                        Open = data.Open,
+                        ReferenceDate = data.Date,
+                        Current = data.Current
+                    };
+
+                    await _realTimeTickerRepository.Insert(newTicker);
+                    currentTickerId = newTicker.Id;
+                    
+                    var newItemLog = new RequestLogTicker
+                    {
+                        TickerId = currentTickerId,
+                        RequestLogId = newLog.Id
+                    };
+
+                    await _requestLogTickerRepository.Insert(newItemLog);
+                }
+
+                return new ResultModel { Data = stockData.Data };
+            }
+            else
+            {
+                var newLog = new RequestLog
+                {
+                    RequestJson = JsonConvert.SerializeObject(model),
+                    ResponseJson = realTimeData.Errors as string,
+                    Status = "Fail",
+                    UserId = model.UserId
+                };
+
+                await _requestLogRepository.Insert(newLog);
+                return new ResultModel { Errors = realTimeData.Errors as string };
+            }
         }
 
         public async Task<ResultModel> GetHistoricalData(TickerFilterModel model)
@@ -50,7 +114,7 @@ namespace StockMarket.Service.Concrete
             var entreprise = await _entrepriseRepository.GetById(model.EntrepriseId);
             var historicalData = await _externalApiService.GetHistoricalData(entreprise.Code, model.Start, model.End);
             if (historicalData.Data != null)
-            {                
+            {
                 var stockData = historicalData.Data as StockDataApiResultModel;
                 var newLog = new RequestLog
                 {
@@ -59,14 +123,14 @@ namespace StockMarket.Service.Concrete
                     Status = "Success",
                     UserId = model.UserId
                 };
-                
+
                 await _requestLogRepository.Insert(newLog);
 
-                foreach(var data in stockData.Data)
+                foreach (var data in stockData.Data)
                 {
                     int currentTickerId = 0;
                     var existingTicker = await _historicalTickerRepository.GetExistingTicker(model.EntrepriseId, data.Date);
-                    if(existingTicker != null)
+                    if (existingTicker != null)
                     {
                         currentTickerId = existingTicker.Id;
                     }
@@ -85,7 +149,7 @@ namespace StockMarket.Service.Concrete
 
                         await _historicalTickerRepository.Insert(newTicker);
                         currentTickerId = newTicker.Id;
-                    }                    
+                    }
 
                     var newItemLog = new RequestLogTicker
                     {

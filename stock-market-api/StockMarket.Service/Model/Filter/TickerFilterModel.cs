@@ -12,5 +12,6 @@ namespace StockMarket.Service.Model.Filter
         public int EntrepriseId { get; set; }
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
+        public List<int> Entreprises { get; set; }
     }
 }
