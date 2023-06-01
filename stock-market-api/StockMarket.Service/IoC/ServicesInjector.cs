@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using StockMarket.Service.Abstract;
 using StockMarket.Service.Concrete;
+using StockMarket.Service.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,8 +21,7 @@ namespace StockMarket.Service.IoC
             });
 
             IMapper mapper = mappingConfig.CreateMapper();
-            services.AddSingleton(mapper);
-
+            services.AddSingleton(mapper);            
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IEntrepriseService, EntrepriseService>();

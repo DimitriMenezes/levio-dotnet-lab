@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace StockMarket.Api.Controllers
 {
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [Route("[controller]")]
     public class TickerController : ControllerBase
     {
@@ -30,7 +30,7 @@ namespace StockMarket.Api.Controllers
             return Ok(result.Data);
         }
 
-        [HttpPost("RealTime")]
+        [HttpPost("RealTime")]        
         public async Task<IActionResult> GetRealTimeData(TickerFilterModel model)
         {
             var result = await _tickerService.GetRealTimeData(model);

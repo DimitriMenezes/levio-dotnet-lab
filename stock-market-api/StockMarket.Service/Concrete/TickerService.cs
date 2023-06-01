@@ -62,14 +62,7 @@ namespace StockMarket.Service.Concrete
 
                 foreach (var data in stockData.Data)
                 {
-                    int currentTickerId = 0;
-                    //var existingTicker = await _historicalTickerRepository.GetExistingTicker(model.EntrepriseId, data.Date);
-                    //if (existingTicker != null)
-                    //{
-                    //    currentTickerId = existingTicker.Id;
-                    //}
-                    //else
-                    //{
+                    int currentTickerId = 0;             
                     var newTicker = new RealTimeTicker
                     {
                         EntrepriseId = model.EntrepriseId,

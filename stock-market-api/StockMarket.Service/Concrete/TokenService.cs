@@ -19,7 +19,9 @@ namespace StockMarket.Service.Concrete
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, client.Name.ToString())                    
+                    new Claim("Name", client.Name.ToString()),  
+                    new Claim("Email", client.Email.ToString()),
+                    new Claim("Id", client.Id.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddHours(8),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
