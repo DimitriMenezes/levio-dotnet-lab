@@ -15,10 +15,12 @@ namespace StockMarket.Service.Concrete
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly ISecurityService _securityService;
         private readonly IMapper _mapper;
-        public UserService(IUserRepository userRepository, IMapper mapper)
+        public UserService(IUserRepository userRepository, ISecurityService securityService, IMapper mapper)
         {
             _userRepository = userRepository;
+            _securityService = securityService;
             _mapper = mapper;
         }
 
@@ -32,7 +34,7 @@ namespace StockMarket.Service.Concrete
             if (existingEntity != null)
                 return new ResultModel { Errors = "Email already registred" };
 
-            model.Password = PasswordService.EncodePassword(model.Password);
+            model.Password = _securityService.EncodePassword(model.Password);
             var newEntity = _mapper.Map<User>(model);
             await _userRepository.Insert(newEntity);
             return new ResultModel { Data = _mapper.Map<UserModel>(newEntity) };
@@ -53,7 +55,7 @@ namespace StockMarket.Service.Concrete
             if (user == null)
                 return new ResultModel { Errors = "User not Found" };
 
-            user.Password = PasswordService.EncodePassword(model.Password);
+            user.Password = _securityService.EncodePassword(model.Password);
             await _userRepository.Update(user);
 
             return new ResultModel { Data = _mapper.Map<UserModel>(user) };

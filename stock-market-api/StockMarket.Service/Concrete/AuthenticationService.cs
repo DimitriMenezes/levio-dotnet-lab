@@ -12,12 +12,14 @@ namespace StockMarket.Service.Concrete
 {
     public class AuthenticationService : IAuthenticationService
     {
-        private readonly IUserRepository _userRepository;        
+        private readonly IUserRepository _userRepository;
+        private readonly ISecurityService _securityService;
         private readonly IMapper _mapper;
 
-        public AuthenticationService(IUserRepository userRepository, IMapper mapper)
+        public AuthenticationService(IUserRepository userRepository, ISecurityService securityService, IMapper mapper)
         {
-            _userRepository = userRepository;            
+            _userRepository = userRepository;
+            _securityService = securityService;
             _mapper = mapper;
         }
 
@@ -29,10 +31,10 @@ namespace StockMarket.Service.Concrete
 
             var parts = client.Password.Split('.', 3);
 
-            if (!PasswordService.IsPasswordCorrect(parts[1], parts[2], model.Password))
+            if (!_securityService.ValidatePassword(parts[1], parts[2], model.Password))
                 return new ResultModel { Errors = "Email or password is incorrect" };
 
-            var token = TokenService.GenerateToken(client);
+            var token = _securityService.GenerateToken(client);
 
             return new ResultModel
             {

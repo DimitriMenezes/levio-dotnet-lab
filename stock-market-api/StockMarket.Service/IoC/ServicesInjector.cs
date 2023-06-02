@@ -24,6 +24,7 @@ namespace StockMarket.Service.IoC
             services.AddSingleton(mapper);            
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<ISecurityService, SecurityService>();
             services.AddScoped<IEntrepriseService, EntrepriseService>();
             services.AddScoped<ITickerService, TickerService>();
             services.AddScoped<IExternalStockMarketApiService, ExternalStockMarketApiService>();

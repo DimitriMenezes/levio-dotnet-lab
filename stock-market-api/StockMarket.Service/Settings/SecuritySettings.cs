@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace StockMarket.Service.Settings
 {
-    public static class SecuritySettings
+    public class SecuritySettings
     {
-        public const string Secret = "ahavb5d5g5z8jhx6yq8y9aghhjswklrta6413daf64g";
+        public string HashSecret { get; set; }
+        public int KeySize { get; set; }
+        public int SaltSize { get; set; }
+        public int Iteration { get; set; }
     }
 }
