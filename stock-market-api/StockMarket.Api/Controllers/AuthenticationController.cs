@@ -19,7 +19,7 @@ namespace StockMarket.Api.Controllers
             _authenticationService = authenticationService;
         }
 
-        [HttpPost("login")]
+        [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginModel model)
         {
             var result = await _authenticationService.Login(model);

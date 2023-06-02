@@ -4,6 +4,7 @@ using StockMarket.Data.Abstract;
 using StockMarket.Domain.Entities;
 using StockMarket.Service.Abstract;
 using StockMarket.Service.Model;
+using StockMarket.Service.Validator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,9 +26,34 @@ namespace StockMarket.Service.Concrete
             _mapper = mapper;
         }
 
+        public async Task<ResultModel> DeleteEntreprise(int id)
+        {
+            try
+            {
+                await _entrepriseRepository.Delete(id);
+                return new ResultModel { Data = "" };
+            }
+            catch (Exception ex)
+            {
+                return new ResultModel { Errors = ex.Message };
+            }
+          
+        }
+
+        public async Task<ResultModel> GetEntrepriseById(int id)
+        {
+            return new ResultModel { Data = await _entrepriseRepository.GetById(id) };
+        }
+
         public async Task<ResultModel> SaveEntreprise(EntrepriseModel model)
         {
-            if(await _entrepriseRepository.GetByCode(model.Code) != null)
+            var validator = new EntrepriseValidator().Validate(model);
+            if(!validator.IsValid)
+            {
+                return new ResultModel { Errors = validator.Errors };
+            }
+
+            if (await _entrepriseRepository.GetByCode(model.Code) != null)
             {
                 return new ResultModel { Errors = "Entreprise Code already registred." };
             }
@@ -35,6 +61,20 @@ namespace StockMarket.Service.Concrete
             var entity = _mapper.Map<Entreprise>(model);
             var entityResult = await _entrepriseRepository.Insert(entity);
             
+            return new ResultModel { Data = _mapper.Map<EntrepriseModel>(entityResult) };
+        }
+
+        public async Task<ResultModel> UpdateEntreprise(EntrepriseModel model)
+        {
+            var validator = new EntrepriseValidator().Validate(model);
+            if (!validator.IsValid)
+            {
+                return new ResultModel { Errors = validator.Errors };
+            }
+
+            var entity = _mapper.Map<Entreprise>(model);
+            var entityResult = await _entrepriseRepository.Update(entity);
+
             return new ResultModel { Data = _mapper.Map<EntrepriseModel>(entityResult) };
         }
     }

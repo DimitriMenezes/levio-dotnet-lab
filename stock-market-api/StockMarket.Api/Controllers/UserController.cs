@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StockMarket.Service.Abstract;
 using StockMarket.Service.Model;
 using System;
@@ -18,7 +19,7 @@ namespace StockMarket.Api.Controllers
             _userService = userService;
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             var result = await _userService.GetUserById(id);            
@@ -35,6 +36,7 @@ namespace StockMarket.Api.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<IActionResult> Put(UserModel model)
         {
             var result = await _userService.UpdateUser(model);

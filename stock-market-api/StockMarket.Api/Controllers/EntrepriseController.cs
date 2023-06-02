@@ -23,10 +23,35 @@ namespace StockMarket.Api.Controllers
             _logger = logger;
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            var result = await _entrepriseService.GetEntrepriseById(id);            
+            return Ok(result);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Post(EntrepriseModel model)
         {
             var result = await _entrepriseService.SaveEntreprise(model);
+            if (result.Errors != null)
+                return BadRequest(result.Errors);
+            return Ok(result.Data);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Put(EntrepriseModel model)
+        {
+            var result = await _entrepriseService.UpdateEntreprise(model);
+            if (result.Errors != null)
+                return BadRequest(result.Errors);
+            return Ok(result.Data);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _entrepriseService.DeleteEntreprise(id);
             if (result.Errors != null)
                 return BadRequest(result.Errors);
             return Ok(result.Data);
