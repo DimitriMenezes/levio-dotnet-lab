@@ -14,13 +14,15 @@ namespace StockMarket.Service.Concrete
 {
     public class UserService : IUserService
     {
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IUserRepository _userRepository;
         private readonly ISecurityService _securityService;
         private readonly IMapper _mapper;
-        public UserService(IUserRepository userRepository, ISecurityService securityService, IMapper mapper)
+        public UserService(ISecurityService securityService, IMapper mapper, IUnitOfWork unitOfWork)
         {
-            _userRepository = userRepository;
+            _userRepository = unitOfWork.UserRepository;
             _securityService = securityService;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
@@ -36,8 +38,17 @@ namespace StockMarket.Service.Concrete
 
             model.Password = _securityService.EncodePassword(model.Password);
             var newEntity = _mapper.Map<User>(model);
-            await _userRepository.Insert(newEntity);
-            return new ResultModel { Data = _mapper.Map<UserModel>(newEntity) };
+            try
+            {
+                await _userRepository.Insert(newEntity);
+                _unitOfWork.Commit();
+                return new ResultModel { Data = _mapper.Map<UserModel>(newEntity) };
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                return new ResultModel { Errors = ex.Message };
+            }
         }
 
         public async Task<ResultModel> GetUserById(int id)
@@ -56,9 +67,17 @@ namespace StockMarket.Service.Concrete
                 return new ResultModel { Errors = "User not Found" };
 
             user.Password = _securityService.EncodePassword(model.Password);
-            await _userRepository.Update(user);
-
-            return new ResultModel { Data = _mapper.Map<UserModel>(user) };
+            try
+            {
+                await _userRepository.Update(user);
+                _unitOfWork.Commit();
+                return new ResultModel { Data = _mapper.Map<UserModel>(user) };
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                return new ResultModel { Errors = ex.Message };
+            }                        
         }
     }
 }
