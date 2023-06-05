@@ -19,5 +19,10 @@ namespace StockMarket.Data.Concrete
         {
             return await _dbSet.FirstOrDefaultAsync(i => i.Code == code);
         }
+
+        public async Task<IQueryable<Entreprise>> GetByCodeList(List<string> codes)
+        {
+            return _dbSet.Where(i => codes.Contains(i.Code));
+        }
     }
 }

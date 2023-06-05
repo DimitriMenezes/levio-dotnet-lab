@@ -10,5 +10,6 @@ namespace StockMarket.Data.Abstract
     public interface IEntrepriseRepository : IBaseRepository<Entreprise>
     {
         Task<Entreprise> GetByCode(string code);
+        Task<IQueryable<Entreprise>> GetByCodeList(List<string> codes);
     }
 }

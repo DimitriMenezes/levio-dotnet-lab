@@ -8,9 +8,8 @@ namespace StockMarket.Service.Model.Filter
 {
     public class TickerFilterModel
     {        
-        public int EntrepriseId { get; set; }
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
-        public List<int> Entreprises { get; set; }
+        public List<string> Entreprises { get; set; }
     }
 }

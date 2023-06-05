@@ -44,9 +44,8 @@ namespace StockMarket.Service.Concrete
 
 
         public async Task<ResultModel> GetRealTimeData(TickerFilterModel model, int userId)
-        {
-            var entreprises = (await _entrepriseRepository.GetAll()).Where(i => model.EntrepriseId == i.Id);
-            var realTimeData = await _externalApiService.GetRealTimeData(entreprises.Select(i => i.Code).ToList());
+        {            
+            var realTimeData = await _externalApiService.GetRealTimeData(model.Entreprises);
             if (realTimeData.Data != null)
             {
                 var stockData = realTimeData.Data as RealTimeStockApiResultModel;
@@ -59,13 +58,14 @@ namespace StockMarket.Service.Concrete
                 };
 
                 await _requestLogRepository.Insert(newLog);
+                var entreprises = await _entrepriseRepository.GetByCodeList(model.Entreprises);
 
                 foreach (var data in stockData.Data)
                 {
                     int currentTickerId = 0;             
                     var newTicker = new RealTimeTicker
                     {
-                        EntrepriseId = model.EntrepriseId,
+                        EntrepriseId = entreprises.FirstOrDefault(i => i.Code == data.Ticker).Id,
                         High = data.High,                            
                         Low = data.Low,
                         Open = data.Open,
@@ -104,8 +104,8 @@ namespace StockMarket.Service.Concrete
 
         public async Task<ResultModel> GetHistoricalData(TickerFilterModel model, int userId)
         {
-            var entreprise = await _entrepriseRepository.GetById(model.EntrepriseId);
-            var historicalData = await _externalApiService.GetHistoricalData(entreprise.Code, model.Start, model.End);
+            var entreprise = await _entrepriseRepository.GetByCode(model.Entreprises.FirstOrDefault());
+            var historicalData = await _externalApiService.GetHistoricalData(model.Entreprises.FirstOrDefault(), model.Start, model.End);
             if (historicalData.Data != null)
             {
                 var stockData = historicalData.Data as StockDataApiResultModel;
@@ -121,8 +121,9 @@ namespace StockMarket.Service.Concrete
 
                 foreach (var data in stockData.Data)
                 {
+                    var entrepriseId = entreprise.Id;
                     int currentTickerId = 0;
-                    var existingTicker = await _historicalTickerRepository.GetExistingTicker(model.EntrepriseId, data.Date);
+                    var existingTicker = await _historicalTickerRepository.GetExistingTicker(entrepriseId, data.Date);
                     if (existingTicker != null)
                     {
                         currentTickerId = existingTicker.Id;
@@ -131,7 +132,7 @@ namespace StockMarket.Service.Concrete
                     {
                         var newTicker = new HistoricalTicker
                         {
-                            EntrepriseId = model.EntrepriseId,
+                            EntrepriseId = entrepriseId,
                             High = data.High,
                             Close = data.Close,
                             Low = data.Low,
