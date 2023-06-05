@@ -43,7 +43,7 @@ namespace StockMarket.Service.Concrete
         }
 
 
-        public async Task<ResultModel> GetRealTimeData(TickerFilterModel model)
+        public async Task<ResultModel> GetRealTimeData(TickerFilterModel model, int userId)
         {
             var entreprises = (await _entrepriseRepository.GetAll()).Where(i => model.EntrepriseId == i.Id);
             var realTimeData = await _externalApiService.GetRealTimeData(entreprises.Select(i => i.Code).ToList());
@@ -55,7 +55,7 @@ namespace StockMarket.Service.Concrete
                     RequestJson = JsonConvert.SerializeObject(model),
                     ResponseJson = JsonConvert.SerializeObject(realTimeData.Data),
                     Status = "Success",
-                    UserId = model.UserId
+                    UserId = userId
                 };
 
                 await _requestLogRepository.Insert(newLog);
@@ -94,7 +94,7 @@ namespace StockMarket.Service.Concrete
                     RequestJson = JsonConvert.SerializeObject(model),
                     ResponseJson = realTimeData.Errors as string,
                     Status = "Fail",
-                    UserId = model.UserId
+                    UserId = userId
                 };
 
                 await _requestLogRepository.Insert(newLog);
@@ -102,7 +102,7 @@ namespace StockMarket.Service.Concrete
             }
         }
 
-        public async Task<ResultModel> GetHistoricalData(TickerFilterModel model)
+        public async Task<ResultModel> GetHistoricalData(TickerFilterModel model, int userId)
         {
             var entreprise = await _entrepriseRepository.GetById(model.EntrepriseId);
             var historicalData = await _externalApiService.GetHistoricalData(entreprise.Code, model.Start, model.End);
@@ -114,7 +114,7 @@ namespace StockMarket.Service.Concrete
                     RequestJson = JsonConvert.SerializeObject(model),
                     ResponseJson = JsonConvert.SerializeObject(historicalData.Data),
                     Status = "Success",
-                    UserId = model.UserId
+                    UserId = userId
                 };
 
                 await _requestLogRepository.Insert(newLog);
@@ -162,7 +162,7 @@ namespace StockMarket.Service.Concrete
                     RequestJson = JsonConvert.SerializeObject(model),
                     ResponseJson = historicalData.Errors as string,
                     Status = "Fail",
-                    UserId = model.UserId
+                    UserId = userId
                 };
 
                 await _requestLogRepository.Insert(newLog);

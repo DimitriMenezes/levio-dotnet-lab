@@ -8,7 +8,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using StockMarket.Api.Middleware;
 using StockMarket.Data.IoC;
 using StockMarket.Domain.Context;
 using StockMarket.Service.IoC;
@@ -44,7 +43,7 @@ namespace StockMarket.Api
                 c.BaseAddress = new Uri(stockDataApi.Url);
                 c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", stockDataApi.ApiKey);
             });
-
+            
             RepositoriesInjector.RegisterRepositories(services);
             ServicesInjector.RegisterServices(services);
 
@@ -117,8 +116,6 @@ namespace StockMarket.Api
 
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseTokenMiddleware();
 
             app.UseEndpoints(endpoints =>
             {

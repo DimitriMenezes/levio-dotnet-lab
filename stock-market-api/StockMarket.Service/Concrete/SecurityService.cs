@@ -64,13 +64,5 @@ namespace StockMarket.Service.Concrete
 
             return key.Equals(hashedPassword);
         }
-
-        /*public static string GenerateGuidToken()
-        {
-            var g = Guid.NewGuid();
-            var guidString = Convert.ToBase64String(g.ToByteArray());
-            var result = string.Join("", guidString.ToCharArray().Where(ch => Char.IsLetterOrDigit(ch)));
-            return result;
-        }*/
     }
 }
