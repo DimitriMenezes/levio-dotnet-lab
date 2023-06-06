@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StockMarket.Data.Abstract;
+using StockMarket.Domain.Context;
 using StockMarket.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace StockMarket.Data.Concrete
 {
     public class EntrepriseRepository : BaseRepository<Entreprise>, IEntrepriseRepository
     {
-        public EntrepriseRepository(DbContext context) : base(context)
+        public EntrepriseRepository(StockMarketContext context) : base(context)
         {
         }
 

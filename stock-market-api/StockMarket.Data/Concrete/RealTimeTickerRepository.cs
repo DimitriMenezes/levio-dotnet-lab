@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StockMarket.Data.Abstract;
+using StockMarket.Domain.Context;
 using StockMarket.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace StockMarket.Data.Concrete
 {
     public class RealTimeTickerRepository : BaseRepository<RealTimeTicker>, IRealTimeTickerRepository
     {
-        public RealTimeTickerRepository(DbContext context) : base(context)
+        public RealTimeTickerRepository(StockMarketContext context) : base(context)
         {
 
         }
