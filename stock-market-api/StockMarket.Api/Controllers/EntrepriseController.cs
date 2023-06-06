@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using StockMarket.Service.Abstract;
 using StockMarket.Service.Model;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 namespace StockMarket.Api.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("[controller]")]
     public class EntrepriseController : ControllerBase
     {
