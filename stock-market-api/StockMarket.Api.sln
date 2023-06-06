@@ -3,13 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockMarket.Api", "StockMarket.Api\StockMarket.Api.csproj", "{5EFA6946-B60C-4676-A106-D07E841B0880}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockMarket.Api", "StockMarket.Api\StockMarket.Api.csproj", "{5EFA6946-B60C-4676-A106-D07E841B0880}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockMarket.Domain", "StockMarket.Domain\StockMarket.Domain.csproj", "{3C96F623-37E7-4922-BA2F-F7AB08B324DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockMarket.Domain", "StockMarket.Domain\StockMarket.Domain.csproj", "{3C96F623-37E7-4922-BA2F-F7AB08B324DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockMarket.Data", "StockMarket.Data\StockMarket.Data.csproj", "{25DB90FC-361D-45F3-91C1-164D202CA2D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockMarket.Data", "StockMarket.Data\StockMarket.Data.csproj", "{25DB90FC-361D-45F3-91C1-164D202CA2D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockMarket.Service", "StockMarket.Service\StockMarket.Service.csproj", "{D1E701A2-ED5E-49A8-9BDA-50C158A6F390}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockMarket.Service", "StockMarket.Service\StockMarket.Service.csproj", "{D1E701A2-ED5E-49A8-9BDA-50C158A6F390}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockMarket.TestsBDD", "StockMarket.TestsBDD\StockMarket.TestsBDD.csproj", "{6C3BC983-ED14-4653-9A6E-13BF36659850}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockMarket.UnitTests", "StockMarket.UnitTests\StockMarket.UnitTests.csproj", "{2F0AB797-FB15-4623-9104-E19222D4C02B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{D1E701A2-ED5E-49A8-9BDA-50C158A6F390}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1E701A2-ED5E-49A8-9BDA-50C158A6F390}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1E701A2-ED5E-49A8-9BDA-50C158A6F390}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C3BC983-ED14-4653-9A6E-13BF36659850}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C3BC983-ED14-4653-9A6E-13BF36659850}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C3BC983-ED14-4653-9A6E-13BF36659850}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C3BC983-ED14-4653-9A6E-13BF36659850}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F0AB797-FB15-4623-9104-E19222D4C02B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F0AB797-FB15-4623-9104-E19222D4C02B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F0AB797-FB15-4623-9104-E19222D4C02B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F0AB797-FB15-4623-9104-E19222D4C02B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
