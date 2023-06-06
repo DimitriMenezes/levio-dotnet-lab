@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using StockMarket.Data.Abstract;
 using StockMarket.Domain.Entities;
 using StockMarket.Service.Abstract;
@@ -17,20 +18,22 @@ namespace StockMarket.Service.Concrete
         private readonly IUserRepository _userRepository;
         private readonly ISecurityService _securityService;
         private readonly IMapper _mapper;
-        public UserService(IUserRepository userRepository, ISecurityService securityService, IMapper mapper)
+        private readonly IValidator<UserModel> _validator;
+        public UserService(IUserRepository userRepository, ISecurityService securityService, IMapper mapper, IValidator<UserModel> validator)
         {
             _userRepository = userRepository;
             _securityService = securityService;
             _mapper = mapper;
+            _validator = validator;
         }
 
         public async Task<ResultModel> CreateUser(UserModel model)
         {
-            var clientValidator = new UserValidator().Validate(model);
+            var clientValidator = await _validator.ValidateAsync(model);
             if (!clientValidator.IsValid)
                 return new ResultModel { Errors = clientValidator.Errors };
 
-            var existingEntity = (await _userRepository.GetAll()).FirstOrDefault(i => i.Email == model.Email);
+            var existingEntity = await _userRepository.GetByEmail(model.Email);
             if (existingEntity != null)
                 return new ResultModel { Errors = "Email already registred" };
 
@@ -47,7 +50,7 @@ namespace StockMarket.Service.Concrete
 
         public async Task<ResultModel> UpdateUser(UserModel model)
         {
-            var validator = new UserValidator().Validate(model);
+            var validator = await _validator.ValidateAsync(model);
             if (!validator.IsValid)
                 return new ResultModel { Errors = validator.Errors };
 

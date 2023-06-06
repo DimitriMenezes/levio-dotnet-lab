@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using StockMarket.Data.Abstract;
 using StockMarket.Service.Abstract;
 using StockMarket.Service.Model;
+using StockMarket.Service.Validator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,16 +17,22 @@ namespace StockMarket.Service.Concrete
         private readonly IUserRepository _userRepository;
         private readonly ISecurityService _securityService;
         private readonly IMapper _mapper;
+        private IValidator<LoginModel> _validator;
 
-        public AuthenticationService(IUserRepository userRepository, ISecurityService securityService, IMapper mapper)
+        public AuthenticationService(IUserRepository userRepository, ISecurityService securityService, IMapper mapper, IValidator<LoginModel> validator)
         {
             _userRepository = userRepository;
             _securityService = securityService;
             _mapper = mapper;
+            _validator = validator;
         }
 
         public async Task<ResultModel> Login(LoginModel model)
         {
+            var validator = await _validator.ValidateAsync(model);
+            if(!validator.IsValid)
+                return new ResultModel { Errors = validator.Errors };
+
             var client = await _userRepository.GetByEmail(model.Email);
             if (client == null)
                 return new ResultModel { Errors = "Email or password is incorrect" };

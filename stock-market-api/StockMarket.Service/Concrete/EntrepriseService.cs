@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Newtonsoft.Json;
 using StockMarket.Data.Abstract;
 using StockMarket.Domain.Entities;
@@ -20,10 +21,12 @@ namespace StockMarket.Service.Concrete
     {
         private readonly IEntrepriseRepository _entrepriseRepository;        
         private readonly IMapper _mapper;
-        public EntrepriseService(IEntrepriseRepository entrepriseRepository, IMapper mapper)
+        private readonly IValidator<EntrepriseModel> _validator;
+        public EntrepriseService(IEntrepriseRepository entrepriseRepository, IMapper mapper, IValidator<EntrepriseModel> validator)
         {
             _entrepriseRepository = entrepriseRepository;            
             _mapper = mapper;
+            _validator = validator;
         }
 
         public async Task<ResultModel> DeleteEntreprise(int id)
@@ -47,7 +50,7 @@ namespace StockMarket.Service.Concrete
 
         public async Task<ResultModel> SaveEntreprise(EntrepriseModel model)
         {
-            var validator = new EntrepriseValidator().Validate(model);
+            var validator = await _validator.ValidateAsync(model);
             if(!validator.IsValid)
             {
                 return new ResultModel { Errors = validator.Errors };
@@ -66,7 +69,7 @@ namespace StockMarket.Service.Concrete
 
         public async Task<ResultModel> UpdateEntreprise(EntrepriseModel model)
         {
-            var validator = new EntrepriseValidator().Validate(model);
+            var validator = await _validator.ValidateAsync(model);
             if (!validator.IsValid)
             {
                 return new ResultModel { Errors = validator.Errors };
