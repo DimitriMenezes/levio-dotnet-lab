@@ -5,7 +5,6 @@ using StockMarket.Domain.Context;
 using System;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
-using Moq;
 using StockMarket.Data.Abstract;
 using StockMarket.Domain.Entities;
 using StockMarket.Service.Concrete;
@@ -21,13 +20,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace StockMarket.UnitTests
+namespace StockMarket.TestsBdd
 {
     public class Fixture : IDisposable
     {
         private StockMarketContext _dbContext;
         public UserRepository UserRepository;
-        public EntrepriseRepository EntrepriseRepository;
         public SecurityService SecurityService;
         IConfiguration _configuration;
         public IMapper Mapper;
@@ -35,10 +33,9 @@ namespace StockMarket.UnitTests
         public Fixture()
         {
             var options = new DbContextOptionsBuilder<StockMarketContext>()
-            .UseInMemoryDatabase("TesteDb").Options;
+            .UseInMemoryDatabase("TesteBddDb").Options;
             _dbContext = new StockMarketContext(options);
             UserRepository = new UserRepository(_dbContext);
-            EntrepriseRepository= new EntrepriseRepository(_dbContext);
 
 
             var mappingConfig = new MapperConfiguration(mc =>
