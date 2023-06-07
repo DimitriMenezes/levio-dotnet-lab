@@ -1,19 +1,9 @@
-﻿using TechTalk.SpecFlow;
-
-namespace StockMarket.TestsBDD.Steps
+namespace StockMarket.TestsBdd.StepDefinitions
 {
     [Binding]
     public sealed class CalculatorStepDefinitions
     {
-
         // For additional details on SpecFlow step definitions see https://go.specflow.org/doc-stepdef
-
-        private readonly ScenarioContext _scenarioContext;
-
-        public CalculatorStepDefinitions(ScenarioContext scenarioContext)
-        {
-            _scenarioContext = scenarioContext;
-        }
 
         [Given("the first number is (.*)")]
         public void GivenTheFirstNumberIs(int number)
@@ -24,19 +14,15 @@ namespace StockMarket.TestsBDD.Steps
             // additional string/Table parameters can be defined on the step definition
             // method. 
 
-            _scenarioContext.Pending();
+            //throw new PendingStepException();
         }
 
         [Given("the second number is (.*)")]
         public void GivenTheSecondNumberIs(int number)
         {
             //TODO: implement arrange (precondition) logic
-            // For storing and retrieving scenario-specific data see https://go.specflow.org/doc-sharingdata
-            // To use the multiline text or the table argument of the scenario,
-            // additional string/Table parameters can be defined on the step definition
-            // method. 
 
-            _scenarioContext.Pending();
+            //throw new PendingStepException();
         }
 
         [When("the two numbers are added")]
@@ -44,7 +30,7 @@ namespace StockMarket.TestsBDD.Steps
         {
             //TODO: implement act (action) logic
 
-            _scenarioContext.Pending();
+            //throw new PendingStepException();
         }
 
         [Then("the result should be (.*)")]
@@ -52,7 +38,7 @@ namespace StockMarket.TestsBDD.Steps
         {
             //TODO: implement assert (verification) logic
 
-            _scenarioContext.Pending();
+            //throw new PendingStepException();
         }
     }
 }

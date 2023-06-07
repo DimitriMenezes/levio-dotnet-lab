@@ -1,27 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="12.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.5" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.2" />
-    <PackageReference Include="Moq" Version="4.18.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
     <PackageReference Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57" />
-    <PackageReference Include="SpecRun.SpecFlow" Version="3.9.31" />
-    <PackageReference Include="FluentAssertions" Version="6.11.0" />
+    <PackageReference Include="SpecFlow.xUnit" Version="3.9.40" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" />
+    <PackageReference Include="FluentAssertions" Version="6.2.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Drivers\" />
-    <Folder Include="Hooks\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\StockMarket.Domain\StockMarket.Domain.csproj" />
+    <Folder Include="Support\" />
   </ItemGroup>
 
 </Project>
