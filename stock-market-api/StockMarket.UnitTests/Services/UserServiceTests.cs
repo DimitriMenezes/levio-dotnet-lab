@@ -23,55 +23,24 @@ using Xunit;
 
 namespace StockMarket.UnitTests.Services
 {
-    public class UserServiceTests
+    public class UserServiceTests : IClassFixture<Fixture>
     {
-        StockMarketContext dbContext;
-        UserRepository userRepository;        
-        IConfiguration configuration;        
-        IMapper mapper;
+        Fixture _fixture;
         Mock<IValidator<UserModel>> validator;
 
-        public UserServiceTests()
-        {            
-            var options = new DbContextOptionsBuilder<StockMarketContext>()
-                   .UseInMemoryDatabase("TesteDb").Options;
-            dbContext = new StockMarketContext(options);          
-            userRepository = new UserRepository(dbContext);
-
-            
-            var mappingConfig = new MapperConfiguration(mc =>
-            {
-                mc.AddProfile(new AutoMapperProfile());
-            });
-
-            mapper = mappingConfig.CreateMapper();
-
+        public UserServiceTests(Fixture fixture)
+        {
+            _fixture = fixture;
             validator = new Mock<IValidator<UserModel>>();
-
-            var SecuritySettings = @"{""SecuritySettings"":{
-            ""HashSecret"" : ""sadfasfsadfsd345325432"",
-            ""KeySize"" : ""8"",
-            ""SaltSize"" : ""8"",
-            ""Iteration"" : ""8""
-            }}";
-
-            var builder = new ConfigurationBuilder();
-            builder.AddJsonStream(new MemoryStream(Encoding.UTF8.GetBytes(SecuritySettings)));
-
-            var configuration1 = builder.Build();
-            configuration = configuration1;
         }
 
         [Fact]
         public async Task CreateUser_ShouldSaveSucessfully()
         {
-            //Arrange          
-            var securityService = new SecurityService(configuration);
-
+            //Arrange
             validator.Setup(m => m.ValidateAsync(It.IsAny<UserModel>(), CancellationToken.None))
-                .ReturnsAsync(new FluentValidation.Results.ValidationResult {});
-                        
-            var service = new UserService(userRepository, securityService, mapper, validator.Object);
+                .ReturnsAsync(new FluentValidation.Results.ValidationResult { });
+            var service = new UserService(_fixture.UserRepository, _fixture.SecurityService, _fixture.Mapper, validator.Object);
             //Act
             var result = await service.CreateUser(new UserModel { Email = "test@test.com", Name = "test", Password = "1234556" });
             //Assert
@@ -82,23 +51,41 @@ namespace StockMarket.UnitTests.Services
         [Fact]
         public async Task CreateUser_ShouldGiveValidationError()
         {
-            //Arrange
-            var securityService = new SecurityService(configuration);
+            //Arrange            
             validator.Setup(m => m.ValidateAsync(It.IsAny<UserModel>(), CancellationToken.None))
-              .ReturnsAsync(new FluentValidation.Results.ValidationResult { 
-                  Errors = new List<FluentValidation.Results.ValidationFailure> 
-                  { 
-                      new FluentValidation.Results.ValidationFailure { ErrorMessage = "Error" } 
-                  } 
+              .ReturnsAsync(new FluentValidation.Results.ValidationResult
+              {
+                  Errors = new List<FluentValidation.Results.ValidationFailure>
+                  {
+                      new FluentValidation.Results.ValidationFailure { ErrorMessage = "Error" }
+                  }
               });
 
-            var service = new UserService(userRepository, securityService, mapper, validator.Object);
+            var service = new UserService(_fixture.UserRepository, _fixture.SecurityService, _fixture.Mapper, validator.Object);
 
             //Act
             var result = await service.CreateUser(new UserModel { Email = "wrong)email", Name = "test", Password = "1234556" });
             //Assert
             Assert.True(result.Data == null);
             Assert.True(result.Errors != null);
+        }
+
+        [Fact]
+        public async Task CreateUser_ShouldGiveEmailAlreadyRegistredError()
+        {
+            //Arrange
+            validator.Setup(m => m.ValidateAsync(It.IsAny<UserModel>(), CancellationToken.None))
+                .ReturnsAsync(new FluentValidation.Results.ValidationResult { });
+            await _fixture.UserRepository.Insert(new User { Email = "already_registred@testeee.com", Name = "Test", Password = "asd" });
+
+            var service = new UserService(_fixture.UserRepository, _fixture.SecurityService, _fixture.Mapper, validator.Object);
+
+            //Act
+            var result = await service.CreateUser(new UserModel { Email = "already_registred@testeee.com", Name = "Autre test", Password = "sgdfs" });
+            //Assert
+            Assert.True(result.Data == null);
+            Assert.True(result.Errors != null);
+            Assert.True((string) result.Errors == "Email already registred");
         }
     }
 }

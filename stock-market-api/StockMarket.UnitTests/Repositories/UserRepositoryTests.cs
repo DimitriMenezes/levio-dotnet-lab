@@ -10,23 +10,22 @@ using Xunit;
 
 namespace StockMarket.UnitTests
 {
-    public class UserRepositoryTests
+    public class UserRepositoryTests : IClassFixture<Fixture>
     {
-        public Mock<StockMarketContext> dbMock = new Mock<StockMarketContext>();
-        public Mock<DbSet<User>> dbSetUser = new Mock<DbSet<User>>();
+        private Fixture _fixture;
+        public UserRepositoryTests(Fixture fixture) 
+        {
+            _fixture = fixture;
+        }    
 
         [Fact]
         public async Task GetByEmail_Should_Return_Value()
         {
-            //Arrange
-            dbSetUser.Object.Add(new User { Email = "test@test.com" });
-            var teste = await dbSetUser.Object.ToListAsync();
-            dbMock.Setup(i => i.User).Returns(dbSetUser.Object);
-           
-            var repository = new UserRepository(dbMock.Object);
+            //Arrange            
+            await _fixture.UserRepository.Insert(new User { Email = "teste@testeee.com", Name = "Test", Password="asd" });
            
             //Act
-            var result = await repository.GetByEmail("test@test.com");
+            var result = await _fixture.UserRepository.GetByEmail("teste@testeee.com");
             //Assert
             Assert.NotNull(result);
         }
@@ -35,12 +34,9 @@ namespace StockMarket.UnitTests
         public async Task GetByEmail_Should_Return_Empty()
         {
             //Arrange            
-            dbMock.Setup(i => i.User).Returns(dbSetUser.Object);
-            var repository = new UserRepository(dbMock.Object);
-            dbMock.Setup(i => i.Add(new User { Email = "test@test.com" }));
-            dbMock.Setup(i => i.SaveChanges());
+           
             //Act
-            var result = await repository.GetByEmail("wrong_test@test.com");
+            var result = await _fixture.UserRepository.GetByEmail("wrong_test@test.com");
             //Assert
             Assert.Null(result);
         }
