@@ -13,7 +13,6 @@ namespace StockMarket.Data.Abstract
         Task<TEntity> Insert(TEntity entity);
         Task<TEntity> Update(TEntity entity);
         Task Delete(int id);
-        Task<IQueryable<TEntity>> Include();
-        Task Save();
+        Task<IQueryable<TEntity>> Include();        
     }
 }

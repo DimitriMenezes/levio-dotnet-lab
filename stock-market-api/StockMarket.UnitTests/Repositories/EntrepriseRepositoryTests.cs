@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockMarket.Data.Concrete;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,10 @@ namespace StockMarket.UnitTests.Repositories
         public async Task GetByCode_Should_Return_Value()
         {
             //Arrange
-            await _fixture.EntrepriseRepository.Insert(new Domain.Entities.Entreprise { Code = "ABC", Name = "Entreprise1" });
+            await _fixture.UnitOfWork.EntrepriseRepository.Insert(new Domain.Entities.Entreprise { Code = "ABC", Name = "Entreprise1" });
+            await _fixture.UnitOfWork.SaveChanges();
             //Act
-            var result = await _fixture.EntrepriseRepository.GetByCode("ABC");
+            var result = await _fixture.UnitOfWork.EntrepriseRepository.GetByCode("ABC");
             //Assert
             Assert.True(result != null);
         }
@@ -30,7 +32,7 @@ namespace StockMarket.UnitTests.Repositories
         public async Task GetByCode_Should_Return_Null()
         {
             //Act
-            var result = await _fixture.EntrepriseRepository.GetByCode("ABCD");
+            var result = await _fixture.UnitOfWork.EntrepriseRepository.GetByCode("ABCD");
             //Assert
             Assert.True(result == null);
         }
@@ -39,10 +41,10 @@ namespace StockMarket.UnitTests.Repositories
         public async Task GetByCodes_Should_Return_Value()
         {
             //Arrange
-            await _fixture.EntrepriseRepository.Insert(new Domain.Entities.Entreprise { Code = "ABC1", Name = "Entreprise1" });
-            await _fixture.EntrepriseRepository.Insert(new Domain.Entities.Entreprise { Code = "ABC2", Name = "Entreprise2" });
+            await _fixture.UnitOfWork.EntrepriseRepository.Insert(new Domain.Entities.Entreprise { Code = "ABC1", Name = "Entreprise1" });
+            await _fixture.UnitOfWork.EntrepriseRepository.Insert(new Domain.Entities.Entreprise { Code = "ABC2", Name = "Entreprise2" });
             //Act
-            var result = await _fixture.EntrepriseRepository.GetByCodeList(new List<string> { "ABC1", "ABC2" });
+            var result = await _fixture.UnitOfWork.EntrepriseRepository.GetByCodeList(new List<string> { "ABC1", "ABC2" });
             //Assert
             Assert.True(result != null);
         }
@@ -50,7 +52,7 @@ namespace StockMarket.UnitTests.Repositories
         [Fact]
         public async Task GetByCodes_Should_Return_Null()
         {
-            var result = await _fixture.EntrepriseRepository.GetByCodeList(new List<string> { "ABCASD1", "ASDASD" });
+            var result = await _fixture.UnitOfWork.EntrepriseRepository.GetByCodeList(new List<string> { "ABCASD1", "ASDASD" });
             //Assert
             Assert.True(!result.Any());
         }

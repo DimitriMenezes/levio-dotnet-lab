@@ -40,7 +40,7 @@ namespace StockMarket.UnitTests.Services
             //Arrange
             validator.Setup(m => m.ValidateAsync(It.IsAny<UserModel>(), CancellationToken.None))
                 .ReturnsAsync(new FluentValidation.Results.ValidationResult { });
-            var service = new UserService(_fixture.UserRepository, _fixture.SecurityService, _fixture.Mapper, validator.Object);
+            var service = new UserService(_fixture.UnitOfWork, _fixture.SecurityService, _fixture.Mapper, validator.Object);
             //Act
             var result = await service.CreateUser(new UserModel { Email = "test@test.com", Name = "test", Password = "1234556" });
             //Assert
@@ -61,7 +61,7 @@ namespace StockMarket.UnitTests.Services
                   }
               });
 
-            var service = new UserService(_fixture.UserRepository, _fixture.SecurityService, _fixture.Mapper, validator.Object);
+            var service = new UserService(_fixture.UnitOfWork, _fixture.SecurityService, _fixture.Mapper, validator.Object);
 
             //Act
             var result = await service.CreateUser(new UserModel { Email = "wrong)email", Name = "test", Password = "1234556" });
@@ -76,9 +76,10 @@ namespace StockMarket.UnitTests.Services
             //Arrange
             validator.Setup(m => m.ValidateAsync(It.IsAny<UserModel>(), CancellationToken.None))
                 .ReturnsAsync(new FluentValidation.Results.ValidationResult { });
-            await _fixture.UserRepository.Insert(new User { Email = "already_registred@testeee.com", Name = "Test", Password = "asd" });
+            await _fixture.UnitOfWork.UserRepository.Insert(new User { Email = "already_registred@testeee.com", Name = "Test", Password = "asd" });
+            await _fixture.UnitOfWork.SaveChanges();
 
-            var service = new UserService(_fixture.UserRepository, _fixture.SecurityService, _fixture.Mapper, validator.Object);
+            var service = new UserService(_fixture.UnitOfWork, _fixture.SecurityService, _fixture.Mapper, validator.Object);
 
             //Act
             var result = await service.CreateUser(new UserModel { Email = "already_registred@testeee.com", Name = "Autre test", Password = "sgdfs" });

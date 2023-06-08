@@ -26,9 +26,8 @@ namespace StockMarket.UnitTests
     public class Fixture : IDisposable
     {
         private StockMarketContext _dbContext;
-        public UserRepository UserRepository;
-        public EntrepriseRepository EntrepriseRepository;
         public SecurityService SecurityService;
+        public IUnitOfWork UnitOfWork;
         IConfiguration _configuration;
         public IMapper Mapper;
 
@@ -37,9 +36,7 @@ namespace StockMarket.UnitTests
             var options = new DbContextOptionsBuilder<StockMarketContext>()
             .UseInMemoryDatabase("TesteDb").Options;
             _dbContext = new StockMarketContext(options);
-            UserRepository = new UserRepository(_dbContext);
-            EntrepriseRepository= new EntrepriseRepository(_dbContext);
-
+            UnitOfWork = new UnitOfWork(_dbContext);
 
             var mappingConfig = new MapperConfiguration(mc =>
             {

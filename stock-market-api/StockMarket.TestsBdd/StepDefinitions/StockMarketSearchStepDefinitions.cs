@@ -22,7 +22,8 @@ namespace StockMarket.TestsBdd.StepDefinitions
         public async Task GivenIAmRegistred(Table table)
         {
             var user = table.CreateInstance<User>();
-            await _fixture.UserRepository.Insert(user);
+            await _fixture.UnitOfWork.UserRepository.Insert(user);
+            await _fixture.UnitOfWork.SaveChanges();
             Assert.True(user.Id != 0);
             _userId = user.Id;
         }
@@ -33,7 +34,8 @@ namespace StockMarket.TestsBdd.StepDefinitions
             var entreprises = table.CreateSet<Entreprise>();
             foreach (var item in entreprises)
             {
-                await _fixture.EntrepriseRepository.Insert(item);
+                await _fixture.UnitOfWork.EntrepriseRepository.Insert(item);
+                await _fixture.UnitOfWork.SaveChanges();
                 Assert.True(item.Id != 0);
             }            
         }
@@ -41,7 +43,7 @@ namespace StockMarket.TestsBdd.StepDefinitions
         [Given(@"I Have Real Time Tickers registred")]
         public async Task GivenIHaveRealTimeTickersRegistred(Table table)
         {
-            var entreprises = await _fixture.EntrepriseRepository.GetAll();
+            var entreprises = await _fixture.UnitOfWork.EntrepriseRepository.GetAll();
             foreach (var row in table.Rows)
             {
                 var ticker = new RealTimeTicker
@@ -52,7 +54,8 @@ namespace StockMarket.TestsBdd.StepDefinitions
                     Low = Convert.ToDecimal(row["low"]),
                     High = Convert.ToDecimal(row["high"])
                 };
-                await _fixture.RealTimeTickerRepository.Insert(ticker);
+                await _fixture.UnitOfWork.RealTimeTickerRepository.Insert(ticker);
+                await _fixture.UnitOfWork.SaveChanges();
                 Assert.True(ticker.Id != 0);
             }                
         }

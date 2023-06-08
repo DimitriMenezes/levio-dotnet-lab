@@ -22,10 +22,10 @@ namespace StockMarket.UnitTests
         public async Task GetByEmail_Should_Return_Value()
         {
             //Arrange            
-            await _fixture.UserRepository.Insert(new User { Email = "teste@testeee.com", Name = "Test", Password="asd" });
-           
+            await _fixture.UnitOfWork.UserRepository.Insert(new User { Email = "teste@testeee.com", Name = "Test", Password="asd" });
+            await _fixture.UnitOfWork.SaveChanges();
             //Act
-            var result = await _fixture.UserRepository.GetByEmail("teste@testeee.com");
+            var result = await _fixture.UnitOfWork.UserRepository.GetByEmail("teste@testeee.com");
             //Assert
             Assert.NotNull(result);
         }
@@ -36,7 +36,7 @@ namespace StockMarket.UnitTests
             //Arrange            
            
             //Act
-            var result = await _fixture.UserRepository.GetByEmail("wrong_test@test.com");
+            var result = await _fixture.UnitOfWork.UserRepository.GetByEmail("wrong_test@test.com");
             //Assert
             Assert.Null(result);
         }

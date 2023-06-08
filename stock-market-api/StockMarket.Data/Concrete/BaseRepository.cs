@@ -23,8 +23,7 @@ namespace StockMarket.Data.Concrete
         public async Task Delete(int id)
         {
             var entity = _dbSet.Find(id);            
-            _dbSet.Remove(entity);
-            await Save();
+            _dbSet.Remove(entity);            
         }
 
         public async Task<IQueryable<TEntity>> GetAll()
@@ -39,24 +38,18 @@ namespace StockMarket.Data.Concrete
 
         public async Task<TEntity> Insert(TEntity entity)
         {
-            await _dbSet.AddAsync(entity);
-            await Save();
+            await _dbSet.AddAsync(entity);            
             return entity;
         }
 
         public async Task<TEntity> Update(TEntity entity)
         {
-            _context.Entry(entity).State = EntityState.Modified;
-            await Save();
+            _context.Entry(entity).State = EntityState.Modified;            
             return entity;
         }
         public async Task<IQueryable<TEntity>> Include()
         {
             return _dbSet;
-        }
-        public async Task Save()
-        {
-            await _context.SaveChangesAsync();
         }
     }
 }

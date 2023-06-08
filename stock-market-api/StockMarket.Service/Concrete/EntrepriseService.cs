@@ -19,12 +19,12 @@ namespace StockMarket.Service.Concrete
 {
     public class EntrepriseService : IEntrepriseService
     {
-        private readonly IEntrepriseRepository _entrepriseRepository;        
+        private readonly IUnitOfWork _unitOfWork;               
         private readonly IMapper _mapper;
         private readonly IValidator<EntrepriseModel> _validator;
-        public EntrepriseService(IEntrepriseRepository entrepriseRepository, IMapper mapper, IValidator<EntrepriseModel> validator)
+        public EntrepriseService(IUnitOfWork unitOfWork, IMapper mapper, IValidator<EntrepriseModel> validator)
         {
-            _entrepriseRepository = entrepriseRepository;            
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
             _validator = validator;
         }
@@ -33,11 +33,13 @@ namespace StockMarket.Service.Concrete
         {
             try
             {
-                await _entrepriseRepository.Delete(id);
+                await _unitOfWork.EntrepriseRepository.Delete(id);
+                await _unitOfWork.SaveChanges();
                 return new ResultModel { Data = "" };
             }
             catch (Exception ex)
             {
+                _unitOfWork.Rollback();
                 return new ResultModel { Errors = ex.Message };
             }
           
@@ -45,7 +47,7 @@ namespace StockMarket.Service.Concrete
 
         public async Task<ResultModel> GetEntrepriseById(int id)
         {
-            return new ResultModel { Data = await _entrepriseRepository.GetById(id) };
+            return new ResultModel { Data = await _unitOfWork.EntrepriseRepository.GetById(id) };
         }
 
         public async Task<ResultModel> SaveEntreprise(EntrepriseModel model)
@@ -56,14 +58,14 @@ namespace StockMarket.Service.Concrete
                 return new ResultModel { Errors = validator.Errors };
             }
 
-            if (await _entrepriseRepository.GetByCode(model.Code) != null)
+            if (await _unitOfWork.EntrepriseRepository.GetByCode(model.Code) != null)
             {
                 return new ResultModel { Errors = "Entreprise Code already registred." };
             }
 
             var entity = _mapper.Map<Entreprise>(model);
-            var entityResult = await _entrepriseRepository.Insert(entity);
-            
+            var entityResult = await _unitOfWork.EntrepriseRepository.Insert(entity);
+            await _unitOfWork.SaveChanges();
             return new ResultModel { Data = _mapper.Map<EntrepriseModel>(entityResult) };
         }
 
@@ -76,8 +78,8 @@ namespace StockMarket.Service.Concrete
             }
 
             var entity = _mapper.Map<Entreprise>(model);
-            var entityResult = await _entrepriseRepository.Update(entity);
-
+            var entityResult = await _unitOfWork.EntrepriseRepository.Update(entity);
+            await _unitOfWork.SaveChanges();
             return new ResultModel { Data = _mapper.Map<EntrepriseModel>(entityResult) };
         }
     }

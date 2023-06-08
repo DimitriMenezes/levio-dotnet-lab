@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Newtonsoft.Json;
 using StockMarket.Data.Abstract;
+using StockMarket.Data.Concrete;
 using StockMarket.Domain.Entities;
 using StockMarket.Service.Abstract;
 using StockMarket.Service.Model;
@@ -15,36 +16,25 @@ using System.Threading.Tasks;
 namespace StockMarket.Service.Concrete
 {
     public class TickerService : ITickerService
-    {
-        private readonly IEntrepriseRepository _entrepriseRepository;
-        private readonly IRequestLogRepository _requestLogRepository;
-        private readonly IHistoricalTickerRepository _historicalTickerRepository;
-        private readonly IRealTimeTickerRepository _realTimeTickerRepository;
-        private readonly IRequestLogTickerRepository _requestLogTickerRepository;
+    {       
         private readonly IExternalStockMarketApiService _externalApiService;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public TickerService(
-            IEntrepriseRepository entrepriseRepository,
-            IRequestLogRepository requestLogRepository,
-            IHistoricalTickerRepository historicalTickerRepository,
-            IRequestLogTickerRepository requestLogTickerRepository,
-            IRealTimeTickerRepository realTimeTickerRepository,
+        public TickerService(            
             IExternalStockMarketApiService externalApiService,
+            IUnitOfWork unitOfWork,
             IMapper mapper)
-        {
-            _entrepriseRepository = entrepriseRepository;
-            _requestLogRepository = requestLogRepository;
-            _historicalTickerRepository = historicalTickerRepository;
-            _realTimeTickerRepository = realTimeTickerRepository;
-            _requestLogTickerRepository = requestLogTickerRepository;
+        {           
             _externalApiService = externalApiService;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
 
         public async Task<ResultModel> GetRealTimeData(TickerFilterModel model, int userId)
-        {            
+        {
+            var entreprises = await _unitOfWork.EntrepriseRepository.GetByCodeList(model.Entreprises);
             var realTimeData = await _externalApiService.GetRealTimeData(model.Entreprises);
             if (realTimeData.Data != null)
             {
@@ -57,34 +47,26 @@ namespace StockMarket.Service.Concrete
                     UserId = userId
                 };
 
-                await _requestLogRepository.Insert(newLog);
-                var entreprises = await _entrepriseRepository.GetByCodeList(model.Entreprises);
+                await _unitOfWork.RequestLogRepository.Insert(newLog);                
 
                 foreach (var data in stockData.Data)
                 {
-                    int currentTickerId = 0;             
-                    var newTicker = new RealTimeTicker
-                    {
-                        EntrepriseId = entreprises.FirstOrDefault(i => i.Code == data.Ticker).Id,
-                        High = data.High,                            
-                        Low = data.Low,
-                        Open = data.Open,
-                        ReferenceDate = data.Date,
-                        Current = data.Current
-                    };
+                    int currentTickerId = 0;
+                    var newTicker = _mapper.Map<RealTimeTicker>(data);
+                    newTicker.EntrepriseId = entreprises.FirstOrDefault(i => i.Code == data.Ticker).Id;
 
-                    await _realTimeTickerRepository.Insert(newTicker);
+                    await _unitOfWork.RealTimeTickerRepository.Insert(newTicker);
                     currentTickerId = newTicker.Id;
                     
                     var newItemLog = new RequestLogTicker
-                    {
-                        TickerId = currentTickerId,
-                        RequestLogId = newLog.Id
+                    {                        
+                        RequestLog = newLog,
+                        Ticker = newTicker
                     };
 
-                    await _requestLogTickerRepository.Insert(newItemLog);
+                    await _unitOfWork.RequestLogTickerRepository.Insert(newItemLog);
                 }
-
+                await _unitOfWork.SaveChanges();
                 return new ResultModel { Data = stockData.Data };
             }
             else
@@ -97,14 +79,15 @@ namespace StockMarket.Service.Concrete
                     UserId = userId
                 };
 
-                await _requestLogRepository.Insert(newLog);
+                await _unitOfWork.RequestLogRepository.Insert(newLog);
+                await _unitOfWork.SaveChanges();
                 return new ResultModel { Errors = realTimeData.Errors as string };
             }
         }
 
         public async Task<ResultModel> GetHistoricalData(TickerFilterModel model, int userId)
         {
-            var entreprise = await _entrepriseRepository.GetByCode(model.Entreprises.FirstOrDefault());
+            var entreprise = await _unitOfWork.EntrepriseRepository.GetByCode(model.Entreprises.FirstOrDefault());
             var historicalData = await _externalApiService.GetHistoricalData(model.Entreprises.FirstOrDefault(), model.Start, model.End);
             if (historicalData.Data != null)
             {
@@ -117,41 +100,34 @@ namespace StockMarket.Service.Concrete
                     UserId = userId
                 };
 
-                await _requestLogRepository.Insert(newLog);
+                await _unitOfWork.RequestLogRepository.Insert(newLog);
 
                 foreach (var data in stockData.Data)
                 {
                     var entrepriseId = entreprise.Id;
-                    int currentTickerId = 0;
-                    var existingTicker = await _historicalTickerRepository.GetExistingTicker(entrepriseId, data.Date);
+                    HistoricalTicker currentTicker;
+                    var existingTicker = await _unitOfWork.HistoricalTickerRepository.GetExistingTicker(entrepriseId, data.Date);
                     if (existingTicker != null)
                     {
-                        currentTickerId = existingTicker.Id;
+                        currentTicker = existingTicker;
                     }
                     else
                     {
-                        var newTicker = new HistoricalTicker
-                        {
-                            EntrepriseId = entrepriseId,
-                            High = data.High,
-                            Close = data.Close,
-                            Low = data.Low,
-                            Open = data.Open,
-                            ReferenceDate = data.Date,
-                            Volume = data.Volume
-                        };
+                        var newTicker = _mapper.Map<HistoricalTicker>(data);
+                        newTicker.EntrepriseId = entrepriseId;
 
-                        await _historicalTickerRepository.Insert(newTicker);
-                        currentTickerId = newTicker.Id;
+                        await _unitOfWork.HistoricalTickerRepository.Insert(newTicker);
+                        currentTicker = newTicker;
                     }
 
                     var newItemLog = new RequestLogTicker
                     {
-                        TickerId = currentTickerId,
-                        RequestLogId = newLog.Id
+                        Ticker = currentTicker,
+                        RequestLog = newLog
                     };
 
-                    await _requestLogTickerRepository.Insert(newItemLog);
+                    await _unitOfWork.RequestLogTickerRepository.Insert(newItemLog);
+                    await _unitOfWork.SaveChanges();
                 }
 
                 return new ResultModel { Data = stockData.Data };
@@ -166,7 +142,8 @@ namespace StockMarket.Service.Concrete
                     UserId = userId
                 };
 
-                await _requestLogRepository.Insert(newLog);
+                await _unitOfWork.RequestLogRepository.Insert(newLog);
+                await _unitOfWork.SaveChanges();
                 return new ResultModel { Errors = historicalData.Errors as string };
             }
         }

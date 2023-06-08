@@ -21,7 +21,10 @@ namespace StockMarket.Service.IoC
                 .ReverseMap();
 
             CreateMap<TickerResultModel, HistoricalTicker>()
-                .ReverseMap();                
+                .ReverseMap();
+
+            CreateMap<RealTimeTickerResultModel, RealTimeTicker>()
+                .ReverseMap();
         }
     }
 }

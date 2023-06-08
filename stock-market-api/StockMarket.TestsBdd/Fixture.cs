@@ -27,13 +27,14 @@ namespace StockMarket.TestsBdd
     public class Fixture : IDisposable
     {
         private StockMarketContext _dbContext;
-        public UserRepository UserRepository;
-        public EntrepriseRepository EntrepriseRepository;
+        public IUnitOfWork UnitOfWork { get; set; }
+        //public UserRepository UserRepository;
+        //public EntrepriseRepository EntrepriseRepository;
         public SecurityService SecurityService;
-        public RealTimeTickerRepository RealTimeTickerRepository;
-        public RequestLogRepository RequestLogRepository;
-        public RequestLogTickerRepository RequestLogTickerRepository;
-        public HistoricalTickerRepository HistoricalTickerRepository;
+        //public RealTimeTickerRepository RealTimeTickerRepository;
+        //public RequestLogRepository RequestLogRepository;
+        //public RequestLogTickerRepository RequestLogTickerRepository;
+        //public HistoricalTickerRepository HistoricalTickerRepository;
         public TickerService TickerService;
         IConfiguration _configuration;
         public IMapper Mapper;
@@ -43,12 +44,13 @@ namespace StockMarket.TestsBdd
             var options = new DbContextOptionsBuilder<StockMarketContext>()
             .UseInMemoryDatabase("TesteBddDb").Options;
             _dbContext = new StockMarketContext(options);
-            UserRepository = new UserRepository(_dbContext);
-            EntrepriseRepository = new EntrepriseRepository(_dbContext);
-            RealTimeTickerRepository = new RealTimeTickerRepository(_dbContext);
-            RequestLogRepository = new RequestLogRepository(_dbContext);
-            HistoricalTickerRepository = new HistoricalTickerRepository(_dbContext);
-            RequestLogTickerRepository = new RequestLogTickerRepository(_dbContext);
+            //UserRepository = new UserRepository(_dbContext);
+            //EntrepriseRepository = new EntrepriseRepository(_dbContext);
+            //RealTimeTickerRepository = new RealTimeTickerRepository(_dbContext);
+            //RequestLogRepository = new RequestLogRepository(_dbContext);
+            //HistoricalTickerRepository = new HistoricalTickerRepository(_dbContext);
+            //RequestLogTickerRepository = new RequestLogTickerRepository(_dbContext);
+            UnitOfWork = new UnitOfWork(_dbContext);
             var externalApi = new Mock<IExternalStockMarketApiService>();
             
             var mappingConfig = new MapperConfiguration(mc =>
@@ -70,8 +72,7 @@ namespace StockMarket.TestsBdd
 
             _configuration = builder.Build();
             SecurityService = new SecurityService(_configuration);
-            TickerService = new TickerService(EntrepriseRepository, RequestLogRepository, HistoricalTickerRepository,
-                RequestLogTickerRepository, RealTimeTickerRepository, externalApi.Object, Mapper);
+            TickerService = new TickerService(externalApi.Object, UnitOfWork, Mapper);
         }
 
         public void Dispose()
