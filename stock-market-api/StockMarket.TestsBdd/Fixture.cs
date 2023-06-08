@@ -19,6 +19,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
+using StockMarket.Service.Abstract;
+using Moq;
 
 namespace StockMarket.TestsBdd
 {
@@ -26,7 +28,13 @@ namespace StockMarket.TestsBdd
     {
         private StockMarketContext _dbContext;
         public UserRepository UserRepository;
+        public EntrepriseRepository EntrepriseRepository;
         public SecurityService SecurityService;
+        public RealTimeTickerRepository RealTimeTickerRepository;
+        public RequestLogRepository RequestLogRepository;
+        public RequestLogTickerRepository RequestLogTickerRepository;
+        public HistoricalTickerRepository HistoricalTickerRepository;
+        public TickerService TickerService;
         IConfiguration _configuration;
         public IMapper Mapper;
 
@@ -36,8 +44,13 @@ namespace StockMarket.TestsBdd
             .UseInMemoryDatabase("TesteBddDb").Options;
             _dbContext = new StockMarketContext(options);
             UserRepository = new UserRepository(_dbContext);
-
-
+            EntrepriseRepository = new EntrepriseRepository(_dbContext);
+            RealTimeTickerRepository = new RealTimeTickerRepository(_dbContext);
+            RequestLogRepository = new RequestLogRepository(_dbContext);
+            HistoricalTickerRepository = new HistoricalTickerRepository(_dbContext);
+            RequestLogTickerRepository = new RequestLogTickerRepository(_dbContext);
+            var externalApi = new Mock<IExternalStockMarketApiService>();
+            
             var mappingConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new AutoMapperProfile());
@@ -57,6 +70,8 @@ namespace StockMarket.TestsBdd
 
             _configuration = builder.Build();
             SecurityService = new SecurityService(_configuration);
+            TickerService = new TickerService(EntrepriseRepository, RequestLogRepository, HistoricalTickerRepository,
+                RequestLogTickerRepository, RealTimeTickerRepository, externalApi.Object, Mapper);
         }
 
         public void Dispose()
