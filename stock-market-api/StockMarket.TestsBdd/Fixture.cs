@@ -27,14 +27,8 @@ namespace StockMarket.TestsBdd
     public class Fixture : IDisposable
     {
         private StockMarketContext _dbContext;
-        public IUnitOfWork UnitOfWork { get; set; }
-        //public UserRepository UserRepository;
-        //public EntrepriseRepository EntrepriseRepository;
+        public IUnitOfWork UnitOfWork { get; set; }        
         public SecurityService SecurityService;
-        //public RealTimeTickerRepository RealTimeTickerRepository;
-        //public RequestLogRepository RequestLogRepository;
-        //public RequestLogTickerRepository RequestLogTickerRepository;
-        //public HistoricalTickerRepository HistoricalTickerRepository;
         public TickerService TickerService;
         IConfiguration _configuration;
         public IMapper Mapper;
@@ -44,12 +38,7 @@ namespace StockMarket.TestsBdd
             var options = new DbContextOptionsBuilder<StockMarketContext>()
             .UseInMemoryDatabase("TesteBddDb").Options;
             _dbContext = new StockMarketContext(options);
-            //UserRepository = new UserRepository(_dbContext);
-            //EntrepriseRepository = new EntrepriseRepository(_dbContext);
-            //RealTimeTickerRepository = new RealTimeTickerRepository(_dbContext);
-            //RequestLogRepository = new RequestLogRepository(_dbContext);
-            //HistoricalTickerRepository = new HistoricalTickerRepository(_dbContext);
-            //RequestLogTickerRepository = new RequestLogTickerRepository(_dbContext);
+
             UnitOfWork = new UnitOfWork(_dbContext);
             var externalApi = new Mock<IExternalStockMarketApiService>();
             
