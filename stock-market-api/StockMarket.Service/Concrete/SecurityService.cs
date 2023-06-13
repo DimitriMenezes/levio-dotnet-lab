@@ -10,6 +10,8 @@ using StockMarket.Service.Abstract;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Cryptography;
+using Azure.Security.KeyVault.Secrets;
+using Azure.Identity;
 
 namespace StockMarket.Service.Concrete
 {
@@ -19,8 +21,16 @@ namespace StockMarket.Service.Concrete
         private readonly SecuritySettings _security;
         public SecurityService(IConfiguration configuration)
         {
-            _configuration = configuration;
-            _security = _configuration.GetSection("SecuritySettings").Get<SecuritySettings>();
+            _configuration = configuration;            
+            var client = new SecretClient(new Uri("https://stockmarket.vault.azure.net/"), new DefaultAzureCredential());
+
+            _security = new SecuritySettings
+            {
+                HashSecret = client.GetSecret("HashSecret").Value.Value,
+                Iteration = Convert.ToInt32(client.GetSecret("Iteration").Value.Value),            
+                KeySize = Convert.ToInt32(client.GetSecret("KeySize").Value.Value),
+                SaltSize = Convert.ToInt32(client.GetSecret("SaltSize").Value.Value)
+            };
         }
 
         public string GenerateToken(User client)

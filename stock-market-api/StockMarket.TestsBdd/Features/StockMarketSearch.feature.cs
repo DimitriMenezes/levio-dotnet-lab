@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace StockMarket.TestsBdd.Features
+namespace StockMarket.TestsBDD.Features
 {
     using TechTalk.SpecFlow;
     using System;
@@ -31,7 +31,7 @@ namespace StockMarket.TestsBdd.Features
 #line 1 "StockMarketSearch.feature"
 #line hidden
         
-        public StockMarketSearchFeature(StockMarketSearchFeature.FixtureData fixtureData, StockMarket_TestsBdd_XUnitAssemblyFixture assemblyFixture, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public StockMarketSearchFeature(StockMarketSearchFeature.FixtureData fixtureData, StockMarket_TestsBDD_XUnitAssemblyFixture assemblyFixture, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
             this.TestInitialize();
