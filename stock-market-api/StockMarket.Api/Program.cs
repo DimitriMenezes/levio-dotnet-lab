@@ -13,7 +13,6 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 //Add services to the container.
-//var connectionString = "Server=tcp:tests-dimitri-levio.database.windows.net,1433;Initial Catalog=Formation;Persist Security Info=False;User ID=dimitri;Password=Dcm.1993;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
 builder.Services.AddDbContext<StockMarketContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
                 .UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole())));
