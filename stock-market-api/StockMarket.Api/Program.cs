@@ -9,27 +9,37 @@ using StockMarket.Service.IoC;
 using StockMarket.Service.Settings;
 using System.Net.Http.Headers;
 using System.Text;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //Add services to the container.
+var keyVaultUrl = builder.Configuration.GetSection("KeyVaultUrl").Get<string>();
+
+var client = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
+var connectionString = client.GetSecret("ConnectionStrings").Value.Value;
+var hashSecret = client.GetSecret("HashSecret").Value.Value;
+var stockDataApiKey = client.GetSecret("StockDataApiKey").Value.Value;
+
 builder.Services.AddDbContext<StockMarketContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+    options.UseSqlServer(connectionString)
                 .UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole())));
 builder.Services.AddScoped<DbContext, StockMarketContext>();
 
-var stockDataApi = builder.Configuration.GetSection("StockDataApi").Get<StockDataModel>();
+var stockDataApiUrl = builder.Configuration.GetSection("StockDataApiUrl").Get<string>();
 builder.Services.AddHttpClient("StockData", c =>
 {
-    c.BaseAddress = new Uri(stockDataApi.Url);
-    c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", stockDataApi.ApiKey);
+    c.BaseAddress = new Uri(stockDataApiUrl);
+    c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", stockDataApiKey);
 });
 
 RepositoriesInjector.RegisterRepositories(builder.Services);
 ServicesInjector.RegisterServices(builder.Services);
 
-var security = builder.Configuration.GetSection("SecuritySettings").Get<SecuritySettings>();
-var key = Encoding.ASCII.GetBytes(security.HashSecret);
+
+var key = Encoding.ASCII.GetBytes(hashSecret);
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

@@ -16,14 +16,12 @@ using Azure.Identity;
 namespace StockMarket.Service.Concrete
 {
     public class SecurityService : ISecurityService
-    {
-        private readonly IConfiguration _configuration;
+    {        
         private readonly SecuritySettings _security;
         public SecurityService(IConfiguration configuration)
-        {
-            _configuration = configuration;            
-            var client = new SecretClient(new Uri("https://stockmarket.vault.azure.net/"), new DefaultAzureCredential());
-
+        {            
+            var keyVaultUrl = configuration.GetSection("KeyVaultUrl").Get<string>();
+            var client = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
             _security = new SecuritySettings
             {
                 HashSecret = client.GetSecret("HashSecret").Value.Value,
