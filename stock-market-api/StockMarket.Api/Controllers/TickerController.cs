@@ -19,7 +19,7 @@ namespace StockMarket.Api.Controllers
 
 
         [HttpPost("Historic")]
-        public async Task<IActionResult> GetHistoricalData(TickerFilterModel model)
+        public async Task<IActionResult> GetHistoricalData(HistoricTickerFilterModel model)
         {
             var userId = GetLoggedUserId();
             var result = await _tickerService.GetHistoricalData(model, userId);
@@ -29,7 +29,7 @@ namespace StockMarket.Api.Controllers
         }
 
         [HttpPost("RealTime")]        
-        public async Task<IActionResult> GetRealTimeData(TickerFilterModel model)
+        public async Task<IActionResult> GetRealTimeData(RealTimeTickerFilterModel model)
         {
             var userId = GetLoggedUserId();
             var result = await _tickerService.GetRealTimeData(model, userId);

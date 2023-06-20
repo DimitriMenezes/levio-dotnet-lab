@@ -125,70 +125,39 @@ this.ScenarioInitialize(scenarioInfo);
  testRunner.And("I Have Entreprises registred", ((string)(null)), table2, "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
-                            "code",
-                            "date",
-                            "low",
-                            "high",
-                            "current",
-                            "open"});
+                            "code"});
                 table3.AddRow(new string[] {
-                            "MSFT",
-                            "2023-06-07 15:00",
-                            "180.8",
-                            "189",
-                            "185",
-                            "180"});
+                            "TSE"});
                 table3.AddRow(new string[] {
-                            "TSLA",
-                            "2023-06-07 14:00",
-                            "199.8",
-                            "205",
-                            "201",
-                            "200"});
-                table3.AddRow(new string[] {
-                            "TSE",
-                            "2023-06-07 12:00",
-                            "208",
-                            "209",
-                            "208.5",
-                            "209"});
+                            "TSLA"});
 #line 14
- testRunner.And("I Have Real Time Tickers registred", ((string)(null)), table3, "And ");
+ testRunner.When("I search for Real Time Tickers", ((string)(null)), table3, "When ");
 #line hidden
                 TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
-                            "code"});
-                table4.AddRow(new string[] {
-                            "TSE"});
-                table4.AddRow(new string[] {
-                            "TSLA"});
-#line 19
- testRunner.When("I search for Real Time Tickers", ((string)(null)), table4, "When ");
-#line hidden
-                TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
                             "code",
                             "date",
                             "low",
                             "high",
                             "current",
                             "open"});
-                table5.AddRow(new string[] {
+                table4.AddRow(new string[] {
                             "TSE",
                             "2023-06-07 12:00",
                             "208",
                             "209",
                             "208.5",
                             "209"});
-                table5.AddRow(new string[] {
+                table4.AddRow(new string[] {
                             "TSLA",
                             "2023-06-07 14:00",
                             "199.8",
                             "205",
                             "201",
                             "200"});
-#line 23
- testRunner.Then("the result is", ((string)(null)), table5, "Then ");
+#line 18
+ testRunner.Then("the result is", ((string)(null)), table4, "Then ");
 #line hidden
-#line 27
+#line 22
  testRunner.And("A search log is saved", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -203,7 +172,7 @@ this.ScenarioInitialize(scenarioInfo);
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Historical Tickers", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 30
+#line 25
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -213,31 +182,42 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-                TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
                             "name",
                             "email",
                             "password"});
-                table6.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "dimitri",
                             "dimitri_menezes@test.com",
                             "qwerty"});
-#line 31
- testRunner.Given("I am registred", ((string)(null)), table6, "Given ");
+#line 26
+ testRunner.Given("I am registred", ((string)(null)), table5, "Given ");
 #line hidden
-                TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
                             "name",
                             "code"});
-                table7.AddRow(new string[] {
+                table6.AddRow(new string[] {
                             "Microsoft",
                             "MSFT"});
-                table7.AddRow(new string[] {
+                table6.AddRow(new string[] {
                             "Tesla",
                             "TSLA"});
-                table7.AddRow(new string[] {
+                table6.AddRow(new string[] {
                             "CGI",
                             "TSE"});
+#line 29
+ testRunner.And("I Have Entreprises registred", ((string)(null)), table6, "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
+                            "code",
+                            "startDate",
+                            "endDate"});
+                table7.AddRow(new string[] {
+                            "MSFT",
+                            "2023-06-01",
+                            "2023-06-06 23:59:59"});
 #line 34
- testRunner.And("I Have Entreprises registred", ((string)(null)), table7, "And ");
+ testRunner.When("I search for Historical Tickers", ((string)(null)), table7, "When ");
 #line hidden
                 TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
                             "code",
@@ -248,13 +228,6 @@ this.ScenarioInitialize(scenarioInfo);
                             "volume"});
                 table8.AddRow(new string[] {
                             "MSFT",
-                            "2023-06-07 16:00",
-                            "123.8",
-                            "130",
-                            "124",
-                            "200456"});
-                table8.AddRow(new string[] {
-                            "MSFT",
                             "2023-06-06 16:00",
                             "122.1",
                             "129",
@@ -274,80 +247,10 @@ this.ScenarioInitialize(scenarioInfo);
                             "123",
                             "124",
                             "765"});
-                table8.AddRow(new string[] {
-                            "MSFT",
-                            "2023-05-31 16:00",
-                            "124",
-                            "126.9",
-                            "125",
-                            "754"});
-                table8.AddRow(new string[] {
-                            "MSFT",
-                            "2023-05-30 16:00",
-                            "122",
-                            "130",
-                            "127",
-                            "645"});
-                table8.AddRow(new string[] {
-                            "TSLA",
-                            "2023-06-07 16:00",
-                            "199.8",
-                            "205",
-                            "201",
-                            "201"});
-                table8.AddRow(new string[] {
-                            "TSE",
-                            "2023-06-07 16:00",
-                            "208",
-                            "209",
-                            "208.4",
-                            "208.4"});
-#line 39
- testRunner.And("I Have Historical Tickers registred", ((string)(null)), table8, "And ");
+#line 37
+ testRunner.Then("the result is", ((string)(null)), table8, "Then ");
 #line hidden
-                TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
-                            "code",
-                            "startDate",
-                            "endDate"});
-                table9.AddRow(new string[] {
-                            "MSFT",
-                            "2023-06-01",
-                            "2023-06-06 23:59:59"});
-#line 49
- testRunner.When("I search for Historical Tickers", ((string)(null)), table9, "When ");
-#line hidden
-                TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
-                            "code",
-                            "date",
-                            "low",
-                            "high",
-                            "close",
-                            "volume"});
-                table10.AddRow(new string[] {
-                            "MSFT",
-                            "2023-06-06 16:00",
-                            "122.1",
-                            "129",
-                            "127",
-                            "123"});
-                table10.AddRow(new string[] {
-                            "MSFT",
-                            "2023-06-05 16:00",
-                            "126",
-                            "127",
-                            "126.2",
-                            "543"});
-                table10.AddRow(new string[] {
-                            "MSFT",
-                            "2023-06-01 16:00",
-                            "128",
-                            "123",
-                            "124",
-                            "765"});
-#line 52
- testRunner.Then("the result is", ((string)(null)), table10, "Then ");
-#line hidden
-#line 57
+#line 42
  testRunner.And("A search log is saved", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }

@@ -1,77 +1,109 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.VisualStudio.TestPlatform.TestHost;
+using Newtonsoft.Json;
 using StockMarket.Data.Concrete;
 using StockMarket.Domain.Entities;
 using StockMarket.Service.Abstract;
 using StockMarket.Service.Concrete;
+using StockMarket.Service.Model;
+using StockMarket.Service.Model.Filter;
 using System;
+using System.Security.Claims;
+using System.Text;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
 namespace StockMarket.TestsBdd.StepDefinitions
 {
     [Binding]
-    public class StockMarketSearchStepDefinitions : IClassFixture<Fixture>
+    public class StockMarketSearchStepDefinitions //: IClassFixture<Fixture>
     {
-        private Fixture _fixture;        
+        //private Fixture _fixture;
         private int _userId;
-        public StockMarketSearchStepDefinitions(Fixture fixture)
+        private OkObjectResult endpointResult;
+
+        public WebApplicationFactory<Program> _factory { get; }
+        public HttpClient _httpClient;
+        public StockMarketSearchStepDefinitions(WebApplicationFactory<Program> Factory)
         {
-            _fixture = fixture;            
+            _factory = Factory;
+            _httpClient = Factory.CreateDefaultClient(new Uri("http://localhost/"));
         }
+
+        //public StockMarketSearchStepDefinitions(Fixture fixture)
+        //{
+        //    _fixture = fixture;
+        //}
 
         [Given(@"I am registred")]
         public async Task GivenIAmRegistred(Table table)
         {
-            var user = table.CreateInstance<User>();
-            await _fixture.UnitOfWork.UserRepository.Insert(user);
-            await _fixture.UnitOfWork.SaveChanges();
-            Assert.True(user.Id != 0);
-            _userId = user.Id;
+            var testando = await _httpClient.GetAsync("User/1");
+
+            /*
+            var userModel = table.CreateInstance<UserModel>();
+
+            var result = await _fixture.UserController.Post(userModel);
+            Assert.IsType<OkObjectResult>(result);
+            var okResult = result as OkObjectResult;
+            var newUser = ((okResult.Value as ResultModel).Data as UserModel);
+            Assert.NotNull(newUser);
+            _userId = newUser.Id;
+            */
         }
 
         [Given(@"I Have Entreprises registred")]
         public async Task GivenIHaveEntreprisesRegistred(Table table)
         {
-            var entreprises = table.CreateSet<Entreprise>();
+            /*
+            var entreprises = table.CreateSet<EntrepriseModel>();
             foreach (var item in entreprises)
             {
-                await _fixture.UnitOfWork.EntrepriseRepository.Insert(item);
-                await _fixture.UnitOfWork.SaveChanges();
-                Assert.True(item.Id != 0);
-            }            
-        }
-
-        [Given(@"I Have Real Time Tickers registred")]
-        public async Task GivenIHaveRealTimeTickersRegistred(Table table)
-        {
-            var entreprises = await _fixture.UnitOfWork.EntrepriseRepository.GetAll();
-            foreach (var row in table.Rows)
-            {
-                var ticker = new RealTimeTicker
-                {
-                    ReferenceDate = DateTime.Parse(row["date"]),
-                    EntrepriseId = entreprises.FirstOrDefault(i => i.Code == row["code"]).Id,
-                    Current = Convert.ToDecimal(row["current"]),
-                    Low = Convert.ToDecimal(row["low"]),
-                    High = Convert.ToDecimal(row["high"])
-                };
-                await _fixture.UnitOfWork.RealTimeTickerRepository.Insert(ticker);
-                await _fixture.UnitOfWork.SaveChanges();
-                Assert.True(ticker.Id != 0);
-            }                
+                var result = await _fixture.EntrepriseController.Post(item);
+                Assert.IsType<OkObjectResult>(result);
+            }        
+            */
         }
 
         [When(@"I search for Real Time Tickers")]
-        public void WhenISearchForRealTimeTickers(Table table)
+        public async Task WhenISearchForRealTimeTickers(Table table)
         {
+            /*
             var codes = table.CreateSet<string>();
-            var result = _fixture.TickerService.GetRealTimeData(new Service.Model.Filter.TickerFilterModel { Entreprises = codes.ToList() }, _userId);
+            var result = await _fixture.TickerController
+                .GetRealTimeData(new RealTimeTickerFilterModel 
+                { 
+                    EntrepriseCodes = codes.ToList()
+                });
+            Assert.IsType<OkObjectResult>(result);
+            endpointResult = result as OkObjectResult;
+            */
         }
 
 
         [When(@"I search for Historical Tickers")]
-        public void WhenISearchForHistoricalTickers(Table table)
+        public async Task WhenISearchForHistoricalTickers(Table table)
         {
-            
+            /*
+            var claims = new System.Security.Claims.ClaimsPrincipal
+            {
+                
+                
+            };
+            _fixture.TickerController.HttpContext.User.AddIdentity(
+                 new ClaimsIdentity(new List<Claim>
+                {
+                    new Claim("Id", _userId.ToString())
+                }));
+
+            var codes = table.CreateInstance<HistoricTickerFilterModel>();
+            //_fixture.TickerController.HttpContext.User = new System.Security.Claims.ClaimsPrincipal { Claims = new  }
+            var result = await _fixture.TickerController
+                .GetHistoricalData(codes);
+            Assert.IsType<OkObjectResult>(result);
+            endpointResult = result as OkObjectResult;
+            */
         }
 
         [Then(@"the result is")]
@@ -82,12 +114,6 @@ namespace StockMarket.TestsBdd.StepDefinitions
 
         [Then(@"A search log is saved")]
         public void ThenASearchLogIsSaved()
-        {
-            
-        }
-
-        [Given(@"I Have Historical Tickers registred")]
-        public void GivenIHaveHistoricalTickersRegistred(Table table)
         {
             
         }

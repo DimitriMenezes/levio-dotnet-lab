@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace StockMarket.Service.Model.Filter
 {
-    public class TickerFilterModel
+    public class HistoricTickerFilterModel
     {        
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
-        public List<string> Entreprises { get; set; }
+        public string EntrepriseCode { get; set; }
     }
 }

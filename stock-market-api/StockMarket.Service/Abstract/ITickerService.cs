@@ -10,7 +10,7 @@ namespace StockMarket.Service.Abstract
 {
     public interface ITickerService
     {
-        Task<ResultModel> GetHistoricalData(TickerFilterModel model, int userId);
-        Task<ResultModel> GetRealTimeData(TickerFilterModel model, int userId);
+        Task<ResultModel> GetHistoricalData(HistoricTickerFilterModel model, int userId);
+        Task<ResultModel> GetRealTimeData(RealTimeTickerFilterModel model, int userId);
     }
 }

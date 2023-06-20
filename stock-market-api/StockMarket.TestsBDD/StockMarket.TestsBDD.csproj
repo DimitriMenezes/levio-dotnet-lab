@@ -15,6 +15,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.18" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.16" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
@@ -32,6 +33,7 @@
 
 
 	<ItemGroup>
+		<ProjectReference Include="..\StockMarket.Api\StockMarket.Api.csproj" />
 		<ProjectReference Include="..\StockMarket.Data\StockMarket.Data.csproj" />
 		<ProjectReference Include="..\StockMarket.Domain\StockMarket.Domain.csproj" />
 		<ProjectReference Include="..\StockMarket.Service\StockMarket.Service.csproj" />

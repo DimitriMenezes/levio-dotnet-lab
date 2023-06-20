@@ -32,10 +32,10 @@ namespace StockMarket.Service.Concrete
         }
 
 
-        public async Task<ResultModel> GetRealTimeData(TickerFilterModel model, int userId)
+        public async Task<ResultModel> GetRealTimeData(RealTimeTickerFilterModel model, int userId)
         {
-            var entreprises = await _unitOfWork.EntrepriseRepository.GetByCodeList(model.Entreprises);
-            var realTimeData = await _externalApiService.GetRealTimeData(model.Entreprises);
+            var entreprises = await _unitOfWork.EntrepriseRepository.GetByCodeList(model.EntrepriseCodes);
+            var realTimeData = await _externalApiService.GetRealTimeData(model.EntrepriseCodes);
             if (realTimeData.Data != null)
             {
                 var stockData = realTimeData.Data as RealTimeStockApiResultModel;
@@ -85,10 +85,10 @@ namespace StockMarket.Service.Concrete
             }
         }
 
-        public async Task<ResultModel> GetHistoricalData(TickerFilterModel model, int userId)
+        public async Task<ResultModel> GetHistoricalData(HistoricTickerFilterModel model, int userId)
         {
-            var entreprise = await _unitOfWork.EntrepriseRepository.GetByCode(model.Entreprises.FirstOrDefault());
-            var historicalData = await _externalApiService.GetHistoricalData(model.Entreprises.FirstOrDefault(), model.Start, model.End);
+            var entreprise = await _unitOfWork.EntrepriseRepository.GetByCode(model.EntrepriseCode);
+            var historicalData = await _externalApiService.GetHistoricalData(model.EntrepriseCode, model.Start, model.End);
             if (historicalData.Data != null)
             {
                 var stockData = historicalData.Data as StockDataApiResultModel;
