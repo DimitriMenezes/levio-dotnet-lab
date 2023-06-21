@@ -92,6 +92,17 @@ builder.Services.AddSwaggerGen(c =>
                 });
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "MY_CORS",
+                      policy =>
+                      {
+                          policy.AllowAnyOrigin();
+                          policy.AllowAnyMethod();
+                          policy.AllowAnyHeader();
+                      });
+});
+
 
 var app = builder.Build();
 
@@ -101,7 +112,9 @@ if (app.Environment.IsDevelopment())
 
 }
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "StockMarket.Api v1"));
+
+app.UseCors("MY_CORS");
 
 app.UseHttpsRedirection();
 
